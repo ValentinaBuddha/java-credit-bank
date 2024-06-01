@@ -1,1 +1,13 @@
+rate: 19
+insurance: 5
 
+logging:
+  level:
+    org:
+      zalando:
+        logbook: TRACE
+      springframework:
+        web:
+          servlet:
+            DispatcherServlet: debug
+    web: info
