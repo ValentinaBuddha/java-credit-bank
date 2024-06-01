@@ -39,7 +39,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--documentation: http://localhost:8080/swagger-ui/index.html OAS: http://localhost:8080/v3/api-docs-->
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-annotations</artifactId>
