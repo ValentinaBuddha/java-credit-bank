@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.neoflex.calculator.dto.LoanOfferDto;
 import ru.neoflex.calculator.dto.LoanStatementRequestDto;
+import ru.neoflex.calculator.service.AnnuityCalculatorService;
 import ru.neoflex.calculator.service.LoanOfferService;
 import ru.neoflex.calculator.service.RateCalculatorService;
 
-import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @Service
 public class LoanOfferServiceImpl implements LoanOfferService {
 
-    private final AnnuityCalculatorServiceImpl annuityCalculatorService;
+    private final AnnuityCalculatorService annuityCalculatorService;
 
     private final RateCalculatorService rateCalculatorService;
 
@@ -46,13 +46,13 @@ public class LoanOfferServiceImpl implements LoanOfferService {
                                            LoanStatementRequestDto loanStatement) {
         log.info("Calculating offer: isInsuranceEnabled = {}, isSalaryClient = {}", isInsuranceEnabled, isSalaryClient);
 
-        BigDecimal totalAmount = annuityCalculatorService.calculateTotalAmount(
+        var totalAmount = annuityCalculatorService.calculateTotalAmount(
                 loanStatement.getAmount(), isInsuranceEnabled);
 
-        BigDecimal rate = rateCalculatorService.calculateRate(
+        var rate = rateCalculatorService.calculateRate(
                 isInsuranceEnabled, isSalaryClient);
 
-        BigDecimal monthlyPayment = annuityCalculatorService.calculateMonthlyPayment(
+        var monthlyPayment = annuityCalculatorService.calculateMonthlyPayment(
                 totalAmount, loanStatement.getTerm(), rate);
 
         return LoanOfferDto.builder()

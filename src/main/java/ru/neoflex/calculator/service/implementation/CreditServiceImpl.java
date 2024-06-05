@@ -9,8 +9,8 @@ import ru.neoflex.calculator.dto.ScoringDataDto;
 import ru.neoflex.calculator.service.AnnuityCalculatorService;
 import ru.neoflex.calculator.service.CreditService;
 import ru.neoflex.calculator.service.RateCalculatorService;
+import ru.neoflex.calculator.service.ScoringService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -23,30 +23,34 @@ import java.util.List;
 @Service
 public class CreditServiceImpl implements CreditService {
 
+    private final ScoringService scoringService;
+
     private final AnnuityCalculatorService annuityCalculatorService;
 
     private final RateCalculatorService rateCalculatorService;
 
     @Override
     public CreditDto calculateCredit(ScoringDataDto scoringData) {
-        log.info("Calculating credit {}", scoringData);
+        log.info("Validation full data and calculation credit parameters {}", scoringData);
 
-        BigDecimal rate = rateCalculatorService.calculateRate(
+        scoringService.scoring(scoringData);
+
+        var rate = rateCalculatorService.calculateRate(
                 scoringData.getIsInsuranceEnabled(), scoringData.getIsSalaryClient());
 
         rate = rateCalculatorService.calculateFinalRate(
                 scoringData, rate);
 
-        BigDecimal amount = annuityCalculatorService.calculateTotalAmount(
+        var amount = annuityCalculatorService.calculateTotalAmount(
                 scoringData.getAmount(), scoringData.getIsInsuranceEnabled());
 
-        BigDecimal monthlyPayment = annuityCalculatorService.calculateMonthlyPayment(
+        var monthlyPayment = annuityCalculatorService.calculateMonthlyPayment(
                 amount, scoringData.getTerm(), rate);
 
         List<PaymentScheduleElementDto> paymentSchedule = annuityCalculatorService.calculatePaymentSchedule(
                 amount, scoringData.getTerm(), rate, monthlyPayment);
 
-        BigDecimal psk = annuityCalculatorService.calculatePSK(
+        var psk = annuityCalculatorService.calculatePsk(
                 paymentSchedule, scoringData.getAmount(), scoringData.getTerm());
 
         return CreditDto.builder()

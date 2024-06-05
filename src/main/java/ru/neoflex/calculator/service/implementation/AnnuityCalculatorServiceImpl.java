@@ -3,7 +3,7 @@ package ru.neoflex.calculator.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.neoflex.calculator.config.ApplicationConfig;
+import ru.neoflex.calculator.config.RateConfig;
 import ru.neoflex.calculator.dto.PaymentScheduleElementDto;
 import ru.neoflex.calculator.service.AnnuityCalculatorService;
 
@@ -23,21 +23,22 @@ import static ru.neoflex.calculator.util.BigDecimalConstant.*;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AnnuityCalculatorServiceImpl  implements AnnuityCalculatorService {
+public class AnnuityCalculatorServiceImpl implements AnnuityCalculatorService {
 
-    private final ApplicationConfig applicationConfig;
+    private final RateConfig rateConfig;
 
     @Override
     public BigDecimal calculateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
         log.info("Calculating total amount: amount = {}, isInsuranceEnabled = {}", amount, isInsuranceEnabled);
 
-        if (isInsuranceEnabled) {
+        if (Boolean.TRUE.equals(isInsuranceEnabled)) {
             return amount
                     .add(amount
-                            .multiply(applicationConfig.getInsuranceRate())
-                            .multiply(ONE_HUNDREDTH));
+                            .multiply(BigDecimal.valueOf(rateConfig.getInsuranceRate()))
+                            .multiply(ONE_HUNDREDTH))
+                    .setScale(2, RoundingMode.HALF_UP);
         } else {
-            return amount;
+            return amount.setScale(2, RoundingMode.HALF_UP);
         }
     }
 
@@ -46,13 +47,13 @@ public class AnnuityCalculatorServiceImpl  implements AnnuityCalculatorService {
         log.info("Calculating monthly payment: totalAmount = {}, term = {}, rate = {}",
                 totalAmount, term, rate);
 
-        BigDecimal monthlyRate = rate.divide(MONTHS_IN_YEAR, 5, RoundingMode.HALF_UP).multiply(ONE_HUNDREDTH);
+        var monthlyRate = rate.divide(MONTHS_IN_YEAR, 5, RoundingMode.HALF_UP).multiply(ONE_HUNDREDTH);
 
-        BigDecimal x = monthlyRate.add(BigDecimal.ONE).pow(term);
+        var x = monthlyRate.add(BigDecimal.ONE).pow(term);
 
-        BigDecimal y = monthlyRate.multiply(x);
+        var y = monthlyRate.multiply(x);
 
-        BigDecimal z = x.subtract(BigDecimal.ONE);
+        var z = x.subtract(BigDecimal.ONE);
 
         return totalAmount.multiply(y).divide(z, 2, RoundingMode.HALF_UP);
     }
@@ -66,14 +67,14 @@ public class AnnuityCalculatorServiceImpl  implements AnnuityCalculatorService {
                 amount, term, rate, monthlyPayment);
 
         List<PaymentScheduleElementDto> paymentSchedule = new ArrayList<>();
-        LocalDate dateOfIssue = LocalDate.now();
-        BigDecimal remainingDebt = amount;
-        BigDecimal totalPayment = monthlyPayment;
-        BigDecimal monthlyRate = rate
+        var dateOfIssue = LocalDate.now();
+        var remainingDebt = amount;
+        var totalPayment = monthlyPayment;
+        var monthlyRate = rate
                 .multiply(ONE_HUNDREDTH)
                 .divide(MONTHS_IN_YEAR, 10, RoundingMode.HALF_UP);
 
-        PaymentScheduleElementDto loanIssue = PaymentScheduleElementDto.builder()
+        var loanIssue = PaymentScheduleElementDto.builder()
                 .number(0)
                 .date(dateOfIssue)
                 .totalPayment(BigDecimal.ZERO)
@@ -86,18 +87,18 @@ public class AnnuityCalculatorServiceImpl  implements AnnuityCalculatorService {
 
         for (int i = 1; i < term + 1; i++) {
 
-            LocalDate currentDate = dateOfIssue.plusMonths(i - 1);
-            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate).setScale(2, RoundingMode.HALF_UP);
-            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment);
+            var currentDate = dateOfIssue.plusMonths(i - 1L);
+            var interestPayment = remainingDebt.multiply(monthlyRate).setScale(2, RoundingMode.HALF_UP);
+            var debtPayment = monthlyPayment.subtract(interestPayment);
             remainingDebt = remainingDebt.subtract(debtPayment);
 
             if (i == term && remainingDebt.compareTo(BigDecimal.ZERO) != 0) {
                 totalPayment = totalPayment.add(remainingDebt);
-                debtPayment = totalPayment;
+                debtPayment = totalPayment.subtract(interestPayment);
                 remainingDebt = BigDecimal.ZERO;
             }
 
-            PaymentScheduleElementDto paymentScheduleElement = PaymentScheduleElementDto.builder()
+            var paymentScheduleElement = PaymentScheduleElementDto.builder()
                     .number(i)
                     .date(currentDate)
                     .totalPayment(totalPayment)
@@ -112,21 +113,21 @@ public class AnnuityCalculatorServiceImpl  implements AnnuityCalculatorService {
     }
 
     @Override
-    public BigDecimal calculatePSK(List<PaymentScheduleElementDto> paymentSchedule, BigDecimal amount, Integer term) {
+    public BigDecimal calculatePsk(List<PaymentScheduleElementDto> paymentSchedule, BigDecimal amount, Integer term) {
         log.info("Calculating psk: amount = {}, term = {}", amount, term);
 
-        BigDecimal totalAmount = paymentSchedule.stream()
+        var totalAmount = paymentSchedule.stream()
                 .map(PaymentScheduleElementDto::getTotalPayment)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
 
-        BigDecimal termInYears = new BigDecimal(term).divide(MONTHS_IN_YEAR, 5, RoundingMode.HALF_UP);
+        var termInYears = new BigDecimal(term).divide(MONTHS_IN_YEAR, 5, RoundingMode.HALF_UP);
 
-        return (totalAmount
-                .divide(amount, 5, RoundingMode.HALF_UP)
+        return ((totalAmount
+                .divide(amount, 7, RoundingMode.HALF_UP))
                 .subtract(BigDecimal.ONE))
-                .divide(termInYears, 5, RoundingMode.HALF_UP)
+                .divide(termInYears, 7, RoundingMode.HALF_UP)
                 .multiply(HUNDRED)
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(3, RoundingMode.HALF_UP);
     }
 }

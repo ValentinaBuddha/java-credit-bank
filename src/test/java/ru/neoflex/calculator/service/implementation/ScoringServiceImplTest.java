@@ -16,8 +16,8 @@ import static ru.neoflex.calculator.dto.enums.EmploymentStatus.UNEMPLOYED;
 class ScoringServiceImplTest {
 
     private final ScoringService scoringService = new ScoringServiceImpl();
-    private final LocalDate birthdaySixtyFiveYearsAge = LocalDate.now().minusYears(65);
-    private final LocalDate birthdayTwentyYearsAge = LocalDate.now().minusYears(20);
+    private final LocalDate birthdateSixtyFiveYearsAge = LocalDate.now().minusYears(65);
+    private final LocalDate birthdateTwentyYearsAge = LocalDate.now().minusYears(20);
     private final EmploymentDto employment = EmploymentDto.builder()
             .employmentStatus(SELF_EMPLOYED)
             .salary(BigDecimal.valueOf(300000))
@@ -56,8 +56,8 @@ class ScoringServiceImplTest {
 
     @Test
     void scoring_whenAgeMoreSixtyFiveYearsAgo_thenThrowsException() {
-        LocalDate birthdaySixtyFiveYearsAgoYearsAgeMinusDay = birthdaySixtyFiveYearsAge.minusDays(1);
-        scoringData.setBirthdate(birthdaySixtyFiveYearsAgoYearsAgeMinusDay);
+        LocalDate birthdateSixtyFiveYearsAgoYearsAgeMinusDay = birthdateSixtyFiveYearsAge.minusDays(1);
+        scoringData.setBirthdate(birthdateSixtyFiveYearsAgoYearsAgeMinusDay);
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
@@ -66,23 +66,23 @@ class ScoringServiceImplTest {
 
     @Test
     void scoring_whenAgeSixtyFive_thenNoExceptionThrown() {
-        scoringData.setBirthdate(birthdaySixtyFiveYearsAge);
+        scoringData.setBirthdate(birthdateSixtyFiveYearsAge);
 
         assertDoesNotThrow(() -> scoringService.scoring(scoringData));
     }
 
     @Test
     void scoring_whenAgeLessSixtyFive_thenNoExceptionThrown() {
-        LocalDate birthdaySixtyFiveYearsAgoYearsAgePlusDay = birthdaySixtyFiveYearsAge.plusDays(1);
-        scoringData.setBirthdate(birthdaySixtyFiveYearsAgoYearsAgePlusDay);
+        LocalDate birthdateSixtyFiveYearsAgoYearsAgePlusDay = birthdateSixtyFiveYearsAge.plusDays(1);
+        scoringData.setBirthdate(birthdateSixtyFiveYearsAgoYearsAgePlusDay);
 
         assertDoesNotThrow(() -> scoringService.scoring(scoringData));
     }
 
     @Test
     void scoring_whenAgeLessTwenty_thenThrowsException() {
-        LocalDate birthdayTwentyYearsAgoYearsAgePlusDay = birthdayTwentyYearsAge.plusDays(1);
-        scoringData.setBirthdate(birthdayTwentyYearsAgoYearsAgePlusDay);
+        LocalDate birthdateTwentyYearsAgoYearsAgePlusDay = birthdateTwentyYearsAge.plusDays(1);
+        scoringData.setBirthdate(birthdateTwentyYearsAgoYearsAgePlusDay);
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
@@ -91,15 +91,15 @@ class ScoringServiceImplTest {
 
     @Test
     void scoring_whenAgeTwenty_thenNoExceptionThrown() {
-        scoringData.setBirthdate(birthdayTwentyYearsAge);
+        scoringData.setBirthdate(birthdateTwentyYearsAge);
 
         assertDoesNotThrow(() -> scoringService.scoring(scoringData));
     }
 
     @Test
     void scoring_whenAgeMoreTwenty_thenNoExceptionThrown() {
-        LocalDate birthdayTwentyYearsAgoMinusDay = birthdayTwentyYearsAge.minusDays(1);
-        scoringData.setBirthdate(birthdayTwentyYearsAgoMinusDay);
+        LocalDate birthdateTwentyYearsAgoMinusDay = birthdateTwentyYearsAge.minusDays(1);
+        scoringData.setBirthdate(birthdateTwentyYearsAgoMinusDay);
 
         assertDoesNotThrow(() -> scoringService.scoring(scoringData));
     }

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.neoflex.calculator.dto.LoanOfferDto;
 import ru.neoflex.calculator.dto.LoanStatementRequestDto;
+import ru.neoflex.calculator.service.AnnuityCalculatorService;
 import ru.neoflex.calculator.service.RateCalculatorService;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 class LoanOfferServiceImplTest {
 
     @Mock
-    private AnnuityCalculatorServiceImpl annuityCalculator;
+    private AnnuityCalculatorService annuityCalculator;
 
     @Mock
     private RateCalculatorService rateCalculator;

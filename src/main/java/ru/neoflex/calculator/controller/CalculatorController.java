@@ -14,7 +14,6 @@ import ru.neoflex.calculator.dto.LoanStatementRequestDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
 import ru.neoflex.calculator.service.CreditService;
 import ru.neoflex.calculator.service.LoanOfferService;
-import ru.neoflex.calculator.service.ScoringService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,8 +33,6 @@ public class CalculatorController {
 
     private final CreditService creditService;
 
-    private final ScoringService scoringService;
-
     /**
      * Validate data and calculate 4 loan offers.
      */
@@ -52,8 +49,6 @@ public class CalculatorController {
     @Operation(summary = "Полный расчёт параметров кредита, скоринг и валидация данных.")
     @PostMapping("/calc")
     public CreditDto calculateCredit(@Parameter(required = true) @Valid @RequestBody ScoringDataDto scoringData) {
-
-        scoringService.scoring(scoringData);
 
         return creditService.calculateCredit(scoringData);
     }

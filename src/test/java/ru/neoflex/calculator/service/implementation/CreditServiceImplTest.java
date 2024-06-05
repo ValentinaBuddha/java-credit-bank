@@ -9,7 +9,9 @@ import ru.neoflex.calculator.dto.CreditDto;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.PaymentScheduleElementDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
+import ru.neoflex.calculator.service.AnnuityCalculatorService;
 import ru.neoflex.calculator.service.RateCalculatorService;
+import ru.neoflex.calculator.service.ScoringService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,7 +28,10 @@ import static ru.neoflex.calculator.dto.enums.Position.WORKER;
 class CreditServiceImplTest {
 
     @Mock
-    private AnnuityCalculatorServiceImpl annuityCalculator;
+    private ScoringService scoringService;
+
+    @Mock
+    private AnnuityCalculatorService annuityCalculator;
 
     @Mock
     private RateCalculatorService rateCalculator;
@@ -80,16 +85,17 @@ class CreditServiceImplTest {
         when(annuityCalculator.calculateTotalAmount(amount, false)).thenReturn(amount);
         when(annuityCalculator.calculateMonthlyPayment(amount, term, rate)).thenReturn(monthlyPayment);
         when(annuityCalculator.calculatePaymentSchedule(amount, term, rate, monthlyPayment)).thenReturn(paymentSchedule);
-        when(annuityCalculator.calculatePSK(paymentSchedule, amount, term)).thenReturn(psk);
+        when(annuityCalculator.calculatePsk(paymentSchedule, amount, term)).thenReturn(psk);
 
         final CreditDto creditCurrent = creditService.calculateCredit(scoringData);
 
         assertEquals(credit, creditCurrent);
+        verify(scoringService, times(1)).scoring(scoringData);
         verify(rateCalculator, times(1)).calculateRate(false, false);
         verify(rateCalculator, times(1)).calculateFinalRate(scoringData, rate);
         verify(annuityCalculator, times(1)).calculateTotalAmount(amount, false);
         verify(annuityCalculator, times(1)).calculateMonthlyPayment(amount, term, rate);
         verify(annuityCalculator, times(1)).calculatePaymentSchedule(amount, term, rate, monthlyPayment);
-        verify(annuityCalculator, times(1)).calculatePSK(paymentSchedule, amount, term);
+        verify(annuityCalculator, times(1)).calculatePsk(paymentSchedule, amount, term);
     }
 }

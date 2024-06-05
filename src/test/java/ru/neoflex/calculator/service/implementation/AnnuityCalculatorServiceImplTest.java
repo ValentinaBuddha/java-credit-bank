@@ -5,29 +5,28 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.neoflex.calculator.config.ApplicationConfig;
+import ru.neoflex.calculator.config.RateConfig;
 import ru.neoflex.calculator.dto.PaymentScheduleElementDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AnnuityCalculatorServiceImplTest {
 
     @Mock
-    private ApplicationConfig applicationConfig;
+    private RateConfig rateConfig;
 
     @InjectMocks
     private AnnuityCalculatorServiceImpl annuityCalculator;
 
     private final BigDecimal amount = BigDecimal.valueOf(100000);
-    private final BigDecimal amountWihInsurance = BigDecimal.valueOf(105000);
+    private final BigDecimal amountWihInsurance = BigDecimal.valueOf(105000.00);
     private final BigDecimal rate = BigDecimal.valueOf(19);
-    private final BigDecimal insuranceRate = BigDecimal.valueOf(5);
     private final int term = 2;
     private final BigDecimal monthlyPayment = BigDecimal.valueOf(51190.61);
     private final PaymentScheduleElementDto paymentScheduleElementDto0 = PaymentScheduleElementDto.builder()
@@ -60,11 +59,12 @@ class AnnuityCalculatorServiceImplTest {
 
     @Test
     void calculateTotalAmount() {
-        when(applicationConfig.getInsuranceRate()).thenReturn(insuranceRate);
+        final Double insuranceRate = 5.00;
+        when(rateConfig.getInsuranceRate()).thenReturn(insuranceRate);
 
         final BigDecimal currentAmount = annuityCalculator.calculateTotalAmount(amount, true);
 
-        assertEquals(amountWihInsurance, currentAmount);
+        assertEquals(amountWihInsurance.setScale(2), currentAmount);
     }
 
     @Test
@@ -90,9 +90,9 @@ class AnnuityCalculatorServiceImplTest {
     }
 
     @Test
-    void calculatePSK() {
-        final BigDecimal currentPsk = annuityCalculator.calculatePSK(paymentSchedule, amount, term);
+    void calculatePsk() {
+        final BigDecimal currentPsk = annuityCalculator.calculatePsk(paymentSchedule, amount, term);
 
-        assertEquals(BigDecimal.valueOf(1.27), currentPsk);
+        assertEquals(BigDecimal.valueOf(14.287), currentPsk);
     }
 }

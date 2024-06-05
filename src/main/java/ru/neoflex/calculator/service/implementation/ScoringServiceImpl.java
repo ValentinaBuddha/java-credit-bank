@@ -25,8 +25,8 @@ public class ScoringServiceImpl implements ScoringService {
         log.info("Scoring: scoringData = {}", scoringData);
 
         EmploymentDto employment = scoringData.getEmployment();
-        LocalDate sixtyFiveYearsAgo = LocalDate.now().minusYears(65);
-        LocalDate twentyYearsAgo = LocalDate.now().minusYears(20);
+        var sixtyFiveYearsAgo = LocalDate.now().minusYears(65);
+        var twentyYearsAgo = LocalDate.now().minusYears(20);
 
         if (employment.getEmploymentStatus() == EmploymentStatus.UNEMPLOYED) {
             throw new ScoringException("Rejection. Working status unemployed.");

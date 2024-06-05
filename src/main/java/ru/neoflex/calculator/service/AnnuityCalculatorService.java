@@ -21,5 +21,5 @@ public interface AnnuityCalculatorService {
                                                              BigDecimal rate,
                                                              BigDecimal monthlyPayment);
 
-    BigDecimal calculatePSK(List<PaymentScheduleElementDto> paymentSchedule, BigDecimal amount, Integer term);
+    BigDecimal calculatePsk(List<PaymentScheduleElementDto> paymentSchedule, BigDecimal amount, Integer term);
 }

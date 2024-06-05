@@ -1,5 +1,5 @@
-rate: 19
-insurance: 5
+rate: 19.00
+insurance_rate: 5.00
 
 logging:
   level:

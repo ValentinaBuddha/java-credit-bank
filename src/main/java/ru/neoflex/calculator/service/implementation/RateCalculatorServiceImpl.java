@@ -3,7 +3,7 @@ package ru.neoflex.calculator.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.neoflex.calculator.config.ApplicationConfig;
+import ru.neoflex.calculator.config.RateConfig;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
 import ru.neoflex.calculator.dto.enums.Gender;
@@ -11,6 +11,7 @@ import ru.neoflex.calculator.dto.enums.MaritalStatus;
 import ru.neoflex.calculator.service.RateCalculatorService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import static ru.neoflex.calculator.dto.enums.EmploymentStatus.BUSINESS_OWNER;
@@ -32,33 +33,33 @@ import static ru.neoflex.calculator.util.BigDecimalConstant.*;
 @Service
 public class RateCalculatorServiceImpl implements RateCalculatorService {
 
-    private final ApplicationConfig applicationConfig;
+    private final RateConfig rateConfig;
 
     @Override
     public BigDecimal calculateRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
-        log.info("Calculating rate: isInsuranceEnabled = {}, isSalaryClient = {}",
-                isInsuranceEnabled, isSalaryClient);
+        log.info("Calculating rate: isInsuranceEnabled = {}, isSalaryClient = {}", isInsuranceEnabled, isSalaryClient);
 
-        BigDecimal rate = applicationConfig.getRate();
+        var rate = BigDecimal.valueOf(rateConfig.getRate());
 
-        if (isInsuranceEnabled) {
+        if (Boolean.TRUE.equals(isInsuranceEnabled)) {
             rate = rate.subtract(THREE);
         }
-        if (isSalaryClient) {
+
+        if (Boolean.TRUE.equals(isSalaryClient)) {
             rate = rate.subtract(BigDecimal.ONE);
         }
 
-        return rate;
+        return rate.setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
     public BigDecimal calculateFinalRate(ScoringDataDto scoringData, BigDecimal previousRate) {
         log.info("Final calculating rate: scoringData = {}, rate = {}", scoringData, previousRate);
 
-        BigDecimal rate = previousRate;
+        var rate = previousRate;
         EmploymentDto employment = scoringData.getEmployment();
         Gender gender = scoringData.getGender();
-        LocalDate birthday = scoringData.getBirthdate();
+        LocalDate birthdate = scoringData.getBirthdate();
         MaritalStatus maritalStatus = scoringData.getMaritalStatus();
 
         if (employment.getEmploymentStatus() == SELF_EMPLOYED) {
@@ -89,28 +90,21 @@ public class RateCalculatorServiceImpl implements RateCalculatorService {
             rate = rate.add(SEVEN);
         }
 
-        if (gender == FEMALE) {
-            if (isOlder(32, birthday) && isYounger(60, birthday)) {
-                rate = rate.subtract(THREE);
-            }
+        if (gender == FEMALE && isOlderAndYounger(32, 60, birthdate)) {
+            rate = rate.subtract(THREE);
+
         }
 
-        if (gender == MALE) {
-            if (isOlder(30, birthday) && isYounger(55, birthday)) {
-                rate = rate.subtract(THREE);
-            }
+        if (gender == MALE && isOlderAndYounger(30, 55, birthdate)) {
+            rate = rate.subtract(THREE);
         }
 
-        return rate;
+        return rate.setScale(2, RoundingMode.HALF_UP);
     }
 
-    private boolean isOlder(int minAge, LocalDate birthday) {
-        LocalDate date = LocalDate.now().minusYears(minAge);
-        return !birthday.isAfter(date);
-    }
-
-    private boolean isYounger(int maxAge, LocalDate birthday) {
-        LocalDate date = LocalDate.now().minusYears(maxAge + 1);
-        return birthday.isAfter(date);
+    private boolean isOlderAndYounger(int minAge, int maxAge, LocalDate birthdate) {
+        LocalDate maxBirthdate = LocalDate.now().minusYears(minAge);
+        LocalDate minBirthdate = LocalDate.now().minusYears(maxAge + 1L);
+        return !birthdate.isAfter(maxBirthdate) && birthdate.isAfter(minBirthdate);
     }
 }
