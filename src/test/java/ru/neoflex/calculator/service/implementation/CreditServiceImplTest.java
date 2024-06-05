@@ -17,8 +17,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static ru.neoflex.calculator.dto.enums.EmploymentStatus.EMPLOYED;
 import static ru.neoflex.calculator.dto.enums.Gender.FEMALE;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOWED;

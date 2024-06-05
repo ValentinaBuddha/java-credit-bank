@@ -9,7 +9,9 @@ import ru.neoflex.calculator.service.ScoringService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.neoflex.calculator.dto.enums.EmploymentStatus.SELF_EMPLOYED;
 import static ru.neoflex.calculator.dto.enums.EmploymentStatus.UNEMPLOYED;
 

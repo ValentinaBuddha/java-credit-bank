@@ -13,7 +13,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.neoflex.calculator.util.BigDecimalConstant.*;
+import static ru.neoflex.calculator.util.BigDecimalConstant.HUNDRED;
+import static ru.neoflex.calculator.util.BigDecimalConstant.MONTHS_IN_YEAR;
+import static ru.neoflex.calculator.util.BigDecimalConstant.ONE_HUNDREDTH;
 
 /**
  * Calculate parameters of credit with annuity payments.

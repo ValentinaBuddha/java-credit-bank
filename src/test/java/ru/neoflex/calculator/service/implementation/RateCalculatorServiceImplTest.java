@@ -14,14 +14,21 @@ import ru.neoflex.calculator.dto.ScoringDataDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.*;
-import static ru.neoflex.calculator.dto.enums.Gender.*;
+import static ru.neoflex.calculator.dto.enums.EmploymentStatus.BUSINESS_OWNER;
+import static ru.neoflex.calculator.dto.enums.EmploymentStatus.EMPLOYED;
+import static ru.neoflex.calculator.dto.enums.EmploymentStatus.SELF_EMPLOYED;
+import static ru.neoflex.calculator.dto.enums.Gender.FEMALE;
 import static ru.neoflex.calculator.dto.enums.Gender.MALE;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.*;
+import static ru.neoflex.calculator.dto.enums.Gender.NON_BINARY;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.DIVORCED;
-import static ru.neoflex.calculator.dto.enums.Position.*;
+import static ru.neoflex.calculator.dto.enums.MaritalStatus.MARRIED;
+import static ru.neoflex.calculator.dto.enums.MaritalStatus.SINGLE;
+import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOWED;
+import static ru.neoflex.calculator.dto.enums.Position.MIDDLE_MANAGER;
+import static ru.neoflex.calculator.dto.enums.Position.TOP_MANAGER;
+import static ru.neoflex.calculator.dto.enums.Position.WORKER;
 
 @ExtendWith(MockitoExtension.class)
 class RateCalculatorServiceImplTest {
