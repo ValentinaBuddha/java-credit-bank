@@ -11,12 +11,20 @@ import ru.neoflex.calculator.dto.enums.Gender;
 import ru.neoflex.calculator.dto.enums.MaritalStatus;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static ru.neoflex.calculator.util.DateConstant.DATE_PATTERN;
-import static ru.neoflex.calculator.util.StringPatterns.*;
+import static ru.neoflex.calculator.util.StringPatterns.ACCOUNT_NUMBER;
+import static ru.neoflex.calculator.util.StringPatterns.LATIN_ALPHABET;
+import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_NUMBER;
+import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_SERIES;
 
 /**
  * Full information for scoring and final credit calculation.

@@ -16,7 +16,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static ru.neoflex.calculator.util.DateConstant.DATE_PATTERN;
-import static ru.neoflex.calculator.util.StringPatterns.*;
+import static ru.neoflex.calculator.util.StringPatterns.EMAIL;
+import static ru.neoflex.calculator.util.StringPatterns.LATIN_ALPHABET;
+import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_NUMBER;
+import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_SERIES;
 
 /**
  * Loan statement after short scoring.
