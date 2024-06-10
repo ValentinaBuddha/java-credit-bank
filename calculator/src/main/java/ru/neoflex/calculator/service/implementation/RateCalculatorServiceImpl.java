@@ -21,7 +21,7 @@ import static ru.neoflex.calculator.dto.enums.Gender.MALE;
 import static ru.neoflex.calculator.dto.enums.Gender.NON_BINARY;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.DIVORCED;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.MARRIED;
-import static ru.neoflex.calculator.dto.enums.Position.MIDDLE_MANAGER;
+import static ru.neoflex.calculator.dto.enums.Position.MID_MANAGER;
 import static ru.neoflex.calculator.dto.enums.Position.TOP_MANAGER;
 import static ru.neoflex.calculator.util.BigDecimalConstant.SEVEN;
 import static ru.neoflex.calculator.util.BigDecimalConstant.THREE;
@@ -74,7 +74,7 @@ public class RateCalculatorServiceImpl implements RateCalculatorService {
             rate = rate.add(TWO);
         }
 
-        if (employment.getPosition() == MIDDLE_MANAGER) {
+        if (employment.getPosition() == MID_MANAGER) {
             rate = rate.subtract(TWO);
         }
 

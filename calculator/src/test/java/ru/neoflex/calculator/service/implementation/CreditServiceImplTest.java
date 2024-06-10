@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ru.neoflex.calculator.dto.enums.EmploymentStatus.EMPLOYED;
 import static ru.neoflex.calculator.dto.enums.Gender.FEMALE;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOWED;
+import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOW_WIDOWER;
 import static ru.neoflex.calculator.dto.enums.Position.WORKER;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,7 +64,7 @@ class CreditServiceImplTest {
             .term(term)
             .gender(FEMALE)
             .birthdate(LocalDate.now().minusYears(30))
-            .maritalStatus(WIDOWED)
+            .maritalStatus(WIDOW_WIDOWER)
             .employment(employment)
             .isInsuranceEnabled(false)
             .isSalaryClient(false)

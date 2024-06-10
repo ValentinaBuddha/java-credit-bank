@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.dto;
+package ru.neoflex.deal.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.neoflex.calculator.annotation.MinEighteenYearsBeforeDate;
+import ru.neoflex.deal.annotation.MinEighteenYearsBeforeDate;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -15,11 +15,11 @@ import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static ru.neoflex.calculator.util.DateConstant.DATE_PATTERN;
-import static ru.neoflex.calculator.util.StringPatterns.EMAIL;
-import static ru.neoflex.calculator.util.StringPatterns.LATIN_ALPHABET;
-import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_NUMBER;
-import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_SERIES;
+import static ru.neoflex.deal.util.DateConstant.DATE_PATTERN;
+import static ru.neoflex.deal.util.StringPatterns.EMAIL;
+import static ru.neoflex.deal.util.StringPatterns.LATIN_ALPHABET;
+import static ru.neoflex.deal.util.StringPatterns.PASSPORT_NUMBER;
+import static ru.neoflex.deal.util.StringPatterns.PASSPORT_SERIES;
 
 /**
  * Loan statement after short scoring.

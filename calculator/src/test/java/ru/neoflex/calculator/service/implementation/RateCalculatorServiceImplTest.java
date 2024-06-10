@@ -25,8 +25,8 @@ import static ru.neoflex.calculator.dto.enums.Gender.NON_BINARY;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.DIVORCED;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.MARRIED;
 import static ru.neoflex.calculator.dto.enums.MaritalStatus.SINGLE;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOWED;
-import static ru.neoflex.calculator.dto.enums.Position.MIDDLE_MANAGER;
+import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOW_WIDOWER;
+import static ru.neoflex.calculator.dto.enums.Position.MID_MANAGER;
 import static ru.neoflex.calculator.dto.enums.Position.TOP_MANAGER;
 import static ru.neoflex.calculator.dto.enums.Position.WORKER;
 
@@ -48,7 +48,7 @@ class RateCalculatorServiceImplTest {
     private final ScoringDataDto scoringData = ScoringDataDto.builder()
             .gender(FEMALE)
             .birthdate(LocalDate.now().minusYears(30))
-            .maritalStatus(WIDOWED)
+            .maritalStatus(WIDOW_WIDOWER)
             .employment(employment)
             .build();
 
@@ -124,7 +124,7 @@ class RateCalculatorServiceImplTest {
 
     @Test
     void calculateFinalRate_whenPositionMiddleManager_thenRateDecreasedBy2() {
-        employment.setPosition(MIDDLE_MANAGER);
+        employment.setPosition(MID_MANAGER);
 
         final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
