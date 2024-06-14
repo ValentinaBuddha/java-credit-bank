@@ -1,30 +1,40 @@
 package ru.neoflex.deal.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import ru.neoflex.deal.enums.CreditStatus;
+import ru.neoflex.deal.model.jsonb.PaymentScheduleElement;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Builder
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "credit")
 public class Credit {
 
@@ -45,20 +55,20 @@ public class Credit {
 
     private BigDecimal psk;
 
-//    @Type(type = "json")
-//    @Basic(fetch = FetchType.LAZY)
-//    @Column(name = "payment_schedule", columnDefinition = "jsonb")
-//    private List<PaymentScheduleElementDto> paymentSchedule;
+    @Basic(fetch = FetchType.LAZY)
+    @Type(type = "json")
+    @Column(name = "payment_schedule")
+    private List<PaymentScheduleElement> paymentSchedule;
 
     @Column(name = "insurance_enable")
-    private Boolean insuranceEnable;
+    private Boolean isInsuranceEnable;
 
     @Column(name = "salary_client")
-    private Boolean salaryClient;
+    private Boolean isSalaryClient;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "credit_status")
-    private CreditStatus creditStatus = CreditStatus.CALCULATED;
+    private CreditStatus creditStatus;
 
     @Override
     public boolean equals(Object o) {

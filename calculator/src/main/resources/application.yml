@@ -1,6 +1,9 @@
 rate: 19.00
 insurance_rate: 5.00
 
+server:
+  port: 8081
+
 logging:
   level:
     org:

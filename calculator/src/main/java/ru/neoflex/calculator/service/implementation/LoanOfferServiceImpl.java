@@ -11,7 +11,6 @@ import ru.neoflex.calculator.service.RateCalculatorService;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -56,7 +55,6 @@ public class LoanOfferServiceImpl implements LoanOfferService {
                 totalAmount, loanStatement.getTerm(), rate);
 
         return LoanOfferDto.builder()
-                .statementId(UUID.randomUUID())
                 .requestedAmount(loanStatement.getAmount())
                 .totalAmount(totalAmount)
                 .term(loanStatement.getTerm())

@@ -1,11 +1,14 @@
 package ru.neoflex.deal.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.TypeDef;
 import ru.neoflex.deal.enums.Gender;
 import ru.neoflex.deal.enums.MaritalStatus;
 
@@ -24,12 +27,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+@Builder
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "client")
 public class Client {
 
@@ -63,12 +68,10 @@ public class Client {
     @Column(name = "dependent_amount")
     private Integer dependentAmount;
 
-    @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "passport_id")
     private Passport passport;
 
-    @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "employment_id")
     private Employment employment;

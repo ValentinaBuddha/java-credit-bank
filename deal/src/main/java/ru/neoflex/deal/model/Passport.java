@@ -1,18 +1,21 @@
 package ru.neoflex.deal.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.neoflex.deal.model.jsonb.PassportData;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,6 +25,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "passport")
 public class Passport {
 
@@ -31,15 +35,12 @@ public class Passport {
     @Column(name = "passport_id")
     private UUID id;
 
-    private String series;
+    @Type(type = "json")
+    private PassportData passportData;
 
-    private String number;
-
-    @Column(name = "issue_branch")
-    private String issueBranch;
-
-    @Column(name = "issue_date")
-    private LocalDate issueDate;
+    public Passport(PassportData passportData) {
+        this.passportData = passportData;
+    }
 
     @Override
     public boolean equals(Object o) {

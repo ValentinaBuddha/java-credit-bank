@@ -3,7 +3,7 @@ package ru.neoflex.calculator.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.neoflex.calculator.config.RateConfig;
+import ru.neoflex.calculator.config.RateConfiguration;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
 import ru.neoflex.calculator.dto.enums.Gender;
@@ -37,13 +37,13 @@ import static ru.neoflex.calculator.util.BigDecimalConstant.TWO;
 @Service
 public class RateCalculatorServiceImpl implements RateCalculatorService {
 
-    private final RateConfig rateConfig;
+    private final RateConfiguration rateConfiguration;
 
     @Override
     public BigDecimal calculateRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
         log.info("Calculating rate: isInsuranceEnabled = {}, isSalaryClient = {}", isInsuranceEnabled, isSalaryClient);
 
-        var rate = BigDecimal.valueOf(rateConfig.getRate());
+        var rate = BigDecimal.valueOf(rateConfiguration.getRate());
 
         if (Boolean.TRUE.equals(isInsuranceEnabled)) {
             rate = rate.subtract(THREE);

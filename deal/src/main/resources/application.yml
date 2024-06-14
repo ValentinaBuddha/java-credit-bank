@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/credit_bank
+    username: postgres
+    password: postgres
+
+  liquibase:
+    enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        ddl-auto: none
+        show-sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org:
+      zalando:
+        logbook: TRACE
+      springframework:
+        orm:
+          jpa: info
+          JpaTransactionManager: debug
+        transaction: info
+        web:
+          servlet:
+            DispatcherServlet: debug
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+
+    web: info
+
+calculator:
+  url: 'http://localhost:8081/calculator'

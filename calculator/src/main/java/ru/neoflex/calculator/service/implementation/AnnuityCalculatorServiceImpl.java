@@ -3,7 +3,7 @@ package ru.neoflex.calculator.service.implementation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.neoflex.calculator.config.RateConfig;
+import ru.neoflex.calculator.config.RateConfiguration;
 import ru.neoflex.calculator.dto.PaymentScheduleElementDto;
 import ru.neoflex.calculator.service.AnnuityCalculatorService;
 
@@ -27,7 +27,7 @@ import static ru.neoflex.calculator.util.BigDecimalConstant.ONE_HUNDREDTH;
 @Service
 public class AnnuityCalculatorServiceImpl implements AnnuityCalculatorService {
 
-    private final RateConfig rateConfig;
+    private final RateConfiguration rateConfiguration;
 
     @Override
     public BigDecimal calculateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
@@ -36,7 +36,7 @@ public class AnnuityCalculatorServiceImpl implements AnnuityCalculatorService {
         if (Boolean.TRUE.equals(isInsuranceEnabled)) {
             return amount
                     .add(amount
-                            .multiply(BigDecimal.valueOf(rateConfig.getInsuranceRate()))
+                            .multiply(BigDecimal.valueOf(rateConfiguration.getInsuranceRate()))
                             .multiply(ONE_HUNDREDTH))
                     .setScale(2, RoundingMode.HALF_UP);
         } else {

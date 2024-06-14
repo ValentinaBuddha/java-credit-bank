@@ -1,6 +1,7 @@
-package ru.neoflex.deal.model;
+package ru.neoflex.deal.model.jsonb;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,25 +9,16 @@ import lombok.ToString;
 import ru.neoflex.deal.enums.ChangeType;
 import ru.neoflex.deal.enums.Status;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-
 @ToString
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
+@EqualsAndHashCode
 @AllArgsConstructor
-//@Entity
-@Table(name = "status_history")
-public class StatementStatusHistory {
-
+@NoArgsConstructor
+public class StatementStatus {
     private Status status;
-
     private LocalDateTime time;
-
     private ChangeType changeType;
-
-    private Long id;
 }

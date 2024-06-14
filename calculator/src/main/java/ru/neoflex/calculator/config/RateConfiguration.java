@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Validated
 @Configuration
 @ConfigurationProperties
-public class RateConfig {
+public class RateConfiguration {
 
     @NotNull
     private Double rate;

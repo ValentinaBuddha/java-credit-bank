@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.neoflex.calculator.config.RateConfig;
+import ru.neoflex.calculator.config.RateConfiguration;
 import ru.neoflex.calculator.dto.PaymentScheduleElementDto;
 
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class AnnuityCalculatorServiceImplTest {
 
     @Mock
-    private RateConfig rateConfig;
+    private RateConfiguration rateConfiguration;
 
     @InjectMocks
     private AnnuityCalculatorServiceImpl annuityCalculator;
@@ -60,7 +60,7 @@ class AnnuityCalculatorServiceImplTest {
     @Test
     void calculateTotalAmount() {
         final Double insuranceRate = 5.00;
-        when(rateConfig.getInsuranceRate()).thenReturn(insuranceRate);
+        when(rateConfiguration.getInsuranceRate()).thenReturn(insuranceRate);
 
         final BigDecimal currentAmount = annuityCalculator.calculateTotalAmount(amount, true);
 

@@ -1,15 +1,20 @@
 package ru.neoflex.deal.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import ru.neoflex.deal.dto.LoanOfferDto;
+import org.hibernate.annotations.TypeDef;
 import ru.neoflex.deal.enums.Status;
+import ru.neoflex.deal.model.jsonb.AppliedOffer;
+import ru.neoflex.deal.model.jsonb.StatementStatus;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,15 +27,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Builder
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "statement")
 public class Statement {
 
@@ -40,12 +49,10 @@ public class Statement {
     @Column(name = "statement_id")
     private UUID id;
 
-    @ToString.Exclude
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "credit_id")
     private Credit credit;
@@ -56,9 +63,9 @@ public class Statement {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    @Type(type = "jsonb")
+    @Type(type = "json")
     @Column(name = "applied_offer")
-    private LoanOfferDto appliedOffer;
+    private AppliedOffer appliedOffer;
 
     @Column(name = "sign_date")
     private LocalDateTime signDate;
@@ -66,8 +73,11 @@ public class Statement {
     @Column(name = "ses_code")
     private String sesCode;
 
-
-//    private List<StatementStatusHistory> statusHistory = new ArrayList<>();
+    @Basic(fetch = FetchType.LAZY)
+    @Type(type = "json")
+    @Column(name = "status_history")
+    @Builder.Default
+    private List<StatementStatus> statusHistory = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

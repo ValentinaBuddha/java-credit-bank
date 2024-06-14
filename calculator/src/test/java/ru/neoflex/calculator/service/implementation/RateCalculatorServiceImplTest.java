@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.neoflex.calculator.config.RateConfig;
+import ru.neoflex.calculator.config.RateConfiguration;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
 
@@ -34,7 +34,7 @@ import static ru.neoflex.calculator.dto.enums.Position.WORKER;
 class RateCalculatorServiceImplTest {
 
     @Mock
-    private RateConfig rateConfig;
+    private RateConfiguration rateConfiguration;
 
     @InjectMocks
     private RateCalculatorServiceImpl rateCalculator;
@@ -54,7 +54,7 @@ class RateCalculatorServiceImplTest {
 
     @Test
     void calculateRate_whenNoInsuranceAndNotSalaryClient_thenRate19() {
-        when(rateConfig.getRate()).thenReturn(creditRate);
+        when(rateConfiguration.getRate()).thenReturn(creditRate);
 
         final BigDecimal rate = rateCalculator.calculateRate(false, false);
 
@@ -63,7 +63,7 @@ class RateCalculatorServiceImplTest {
 
     @Test
     void calculateRate_whenInsuranceAndNotSalaryClient_thenRate16() {
-        when(rateConfig.getRate()).thenReturn(creditRate);
+        when(rateConfiguration.getRate()).thenReturn(creditRate);
 
         final BigDecimal rate = rateCalculator.calculateRate(true, false);
 
@@ -72,7 +72,7 @@ class RateCalculatorServiceImplTest {
 
     @Test
     void calculateRate_whenNoInsuranceAndSalaryClient_thenRate18() {
-        when(rateConfig.getRate()).thenReturn(creditRate);
+        when(rateConfiguration.getRate()).thenReturn(creditRate);
 
         final BigDecimal rate = rateCalculator.calculateRate(false, true);
 
@@ -81,7 +81,7 @@ class RateCalculatorServiceImplTest {
 
     @Test
     void calculateRate_whenInsuranceAndSalaryClient_thenRate18() {
-        when(rateConfig.getRate()).thenReturn(creditRate);
+        when(rateConfiguration.getRate()).thenReturn(creditRate);
 
         final BigDecimal rate = rateCalculator.calculateRate(true, true);
 

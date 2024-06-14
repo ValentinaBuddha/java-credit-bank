@@ -1,22 +1,21 @@
 package ru.neoflex.deal.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import ru.neoflex.deal.enums.EmploymentStatus;
-import ru.neoflex.deal.enums.Position;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.neoflex.deal.model.jsonb.EmploymentData;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,6 +25,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "employment")
 public class Employment {
 
@@ -35,22 +35,12 @@ public class Employment {
     @Column(name = "employment_id")
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    private EmploymentStatus status;
+    @Type(type = "json")
+    private EmploymentData employmentData;
 
-    @Column(name = "employer_inn")
-    private String employerINN;
-
-    private BigDecimal salary;
-
-    @Enumerated(EnumType.STRING)
-    private Position position;
-
-    @Column(name = "work_experience_employment_idtotal")
-    private Integer workExperienceTotal;
-
-    @Column(name = "work_experience_current")
-    private Integer workExperienceCurrent;
+    public Employment(EmploymentData employmentData) {
+        this.employmentData = employmentData;
+    }
 
     @Override
     public boolean equals(Object o) {
