@@ -6,7 +6,7 @@ spring:
     password: postgres
 
   liquibase:
-    enabled: false
+    enabled: true
 
   jpa:
     hibernate:

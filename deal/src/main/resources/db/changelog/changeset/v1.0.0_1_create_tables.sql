@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS passport, employment, client, credit, status_history, statement;
+--liquibase formatted sql
+--changeset Valentina Vakhlamova:create-tables
 
 CREATE TABLE IF NOT EXISTS passport
 (
