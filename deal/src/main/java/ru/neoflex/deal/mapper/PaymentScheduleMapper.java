@@ -8,11 +8,12 @@ public final class PaymentScheduleMapper {
     public static PaymentScheduleElement toEntity(PaymentScheduleElementDto element) {
 
         return new PaymentScheduleElement(
+                element.getNumber(),
                 element.getDate(),
                 element.getTotalPayment(),
                 element.getInterestPayment(),
                 element.getDebtPayment(),
-                element.getDebtPayment());
+                element.getRemainingDebt());
     }
 
     private PaymentScheduleMapper() {

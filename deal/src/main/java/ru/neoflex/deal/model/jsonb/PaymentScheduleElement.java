@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentScheduleElement {
+    private Integer number;
     private LocalDate date;
     private BigDecimal totalPayment;
     private BigDecimal interestPayment;

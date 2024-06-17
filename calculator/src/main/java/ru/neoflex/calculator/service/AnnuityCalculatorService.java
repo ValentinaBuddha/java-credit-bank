@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Describes the functionality of the service for credit parameters calculation with annuity payments..
+ * Describes the functionality of the service for credit parameters calculation with annuity payments.
  *
  * @author Valentina Vakhlamova
  */

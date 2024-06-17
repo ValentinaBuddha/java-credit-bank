@@ -27,21 +27,21 @@ public class LoanOfferDto {
     @Schema(description = "Запрошенная сумма кредита", example = "100000")
     private BigDecimal requestedAmount;
 
-    @Schema(description = "Общая сумма кредита (с учетом страховки)", example = "110000.55")
+    @Schema(description = "Общая сумма кредита (с учетом страховки)", example = "100000")
     private BigDecimal totalAmount;
 
-    @Schema(description = "Срок кредита в месяцах", example = "12")
+    @Schema(description = "Срок кредита в месяцах", example = "6")
     private Integer term;
 
-    @Schema(description = "Ежемесячный платеж", example = "3060.00")
+    @Schema(description = "Ежемесячный платеж", example = "17602.27")
     private BigDecimal monthlyPayment;
 
-    @Schema(description = "Ставка по кредиту", example = "7")
+    @Schema(description = "Ставка по кредиту", example = "19")
     private BigDecimal rate;
 
-    @Schema(description = "Включена ли страховка", example = "true")
+    @Schema(description = "Включена ли страховка", example = "false")
     private Boolean isInsuranceEnabled;
 
-    @Schema(description = "Наличие зарплатного клиента в банке", example = "true")
+    @Schema(description = "Наличие зарплатного клиента в банке", example = "false")
     private Boolean isSalaryClient;
 }

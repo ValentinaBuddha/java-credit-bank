@@ -6,6 +6,11 @@ import ru.neoflex.deal.dto.LoanStatementRequestDto;
 
 import java.util.List;
 
+/**
+ * Describes the functionality of the service for credit parameters calculation and saving data.
+ *
+ * @author Valentina Vakhlamova
+ */
 public interface DealService {
 
     List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement);

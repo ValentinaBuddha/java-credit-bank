@@ -14,13 +14,12 @@ import ru.neoflex.deal.mapper.ClientMapper;
 import ru.neoflex.deal.mapper.CreditMapper;
 import ru.neoflex.deal.mapper.EmploymentMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
+import ru.neoflex.deal.mapper.PassportMapper;
 import ru.neoflex.deal.mapper.ScoringDataMapper;
 import ru.neoflex.deal.mapper.StatementMapper;
 import ru.neoflex.deal.model.Client;
 import ru.neoflex.deal.model.Employment;
-import ru.neoflex.deal.model.Passport;
 import ru.neoflex.deal.model.Statement;
-import ru.neoflex.deal.model.jsonb.PassportData;
 import ru.neoflex.deal.model.jsonb.StatementStatus;
 import ru.neoflex.deal.reposiory.ClientRepository;
 import ru.neoflex.deal.reposiory.CreditRepository;
@@ -38,6 +37,11 @@ import static ru.neoflex.deal.enums.Status.CC_DENIED;
 import static ru.neoflex.deal.enums.Status.CLIENT_DENIED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 
+/**
+ * Service for credit parameters calculation and saving data.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
@@ -55,21 +59,22 @@ public class DealServiceImpl implements DealService {
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
         log.info("Calculate loan offers in dealService: loanStatement = {}", loanStatement);
 
-        var passportData = new PassportData(loanStatement.getPassportSeries(), loanStatement.getPassportNumber());
-        var passport = passportRepository.save(new Passport(passportData));
+        var passport = PassportMapper.toEntity(loanStatement.getPassportSeries(), loanStatement.getPassportNumber());
+        var savedPassport = passportRepository.save(passport);
+        log.info("Passport saved = {}", savedPassport);
 
-        var client = ClientMapper.toEntity(loanStatement, passport);
+        var client = ClientMapper.toEntity(loanStatement, savedPassport);
         var savedClient = clientRepository.save(client);
-        log.info("Client saved: client = {}", savedClient);
+        log.info("Client saved = {}", savedClient);
 
         var statement = StatementMapper.toEntity(client);
         var savedStatement = statementRepository.save(statement);
-        log.info("Statement saved: statement = {}", savedStatement);
+        log.info("Statement saved = {}", savedStatement);
 
-        saveStatus(statement, PREAPPROVAL);
+        saveStatus(savedStatement, PREAPPROVAL);
 
         List<LoanOfferDto> offers = calculatorFeignClient.getLoanOffers(loanStatement);
-        offers.forEach(offer -> offer.setStatementId(statement.getId()));
+        offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
         log.info("Offers get from CalculatorMS: {}",
                 offers.stream().map(LoanOfferDto::toString).collect(Collectors.joining(", ")));
 

@@ -15,9 +15,9 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ConstraintViolationException.class, BadRequestException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validateException(RuntimeException e) {
+    public ErrorResponse validateException(BadRequestException e) {
         log.info(e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
@@ -33,9 +33,9 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse conflictException(DataIntegrityViolationException e) {
+    public ErrorResponse conflictException(RuntimeException e) {
         log.info(e.getMessage());
         return new ErrorResponse(HttpStatus.CONFLICT, e.getMessage());
     }

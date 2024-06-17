@@ -18,11 +18,12 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * API.
+ * API for credit parameters calculation and saving data.
  *
  * @author Valentina Vakhlamova
  */
-@Tag(name = "Сделка", description = "API.")
+@Tag(name = "Сделка", description = "API по расчёту кредитных предложений, выбору одного из них, " +
+        "завершения регистрации с полным расчётом всех параметров по кредиту и сохранения данных в базу данных.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/deal")
@@ -30,6 +31,9 @@ public class DealController {
 
     private final DealService dealService;
 
+    /**
+     * Calculate 4 loan offers.
+     */
     @Operation(summary = "Расчёт возможных условий кредита.")
     @PostMapping("/statement")
     public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @Valid @RequestBody
@@ -37,14 +41,19 @@ public class DealController {
         return dealService.calculateLoanOffers(loanStatement);
     }
 
+    /**
+     * Select one loan offer.
+     */
     @Operation(summary = "Выбор одного из предложений по кредиту.")
     @PostMapping("/offer/select")
-    public void selectLoanOffers(@Parameter(required = true) @Valid @RequestBody
-                                 LoanOfferDto loanOffer) {
+    public void selectLoanOffers(@Parameter(required = true) @Valid @RequestBody LoanOfferDto loanOffer) {
         dealService.selectLoanOffers(loanOffer);
     }
 
-    @Operation(summary = "Завершение регистрации и полный подсчёт кредита.")
+    /**
+     * Final registration and full calculation of credit parameters.
+     */
+    @Operation(summary = "Завершение регистрации и полный расчёт всех параметров по кредиту.")
     @PostMapping("/calculate/{statementId}")
     public void calculateCredit(@PathVariable @Parameter(required = true) String statementId,
                                 @Parameter(required = true) @Valid @RequestBody
