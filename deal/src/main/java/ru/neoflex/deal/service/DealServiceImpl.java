@@ -8,6 +8,7 @@ import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
 import ru.neoflex.deal.enums.Status;
+import ru.neoflex.deal.exception.EmailExistsException;
 import ru.neoflex.deal.exception.EntityNotFoundException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.ClientMapper;
@@ -29,6 +30,7 @@ import ru.neoflex.deal.reposiory.StatementRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,13 +61,7 @@ public class DealServiceImpl implements DealService {
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
         log.info("Calculate loan offers in dealService: loanStatement = {}", loanStatement);
 
-        var passport = PassportMapper.toEntity(loanStatement.getPassportSeries(), loanStatement.getPassportNumber());
-        var savedPassport = passportRepository.save(passport);
-        log.info("Passport saved = {}", savedPassport);
-
-        var client = ClientMapper.toEntity(loanStatement, savedPassport);
-        var savedClient = clientRepository.save(client);
-        log.info("Client saved = {}", savedClient);
+        var client = saveClient(loanStatement);
 
         var statement = StatementMapper.toEntity(client);
         var savedStatement = statementRepository.save(statement);
@@ -142,5 +138,45 @@ public class DealServiceImpl implements DealService {
     private Client findClientById(UUID id) {
         return clientRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Client with id %s wasn't found", id)));
+    }
+
+    private Client saveClient(LoanStatementRequestDto loanStatement) {
+
+        var email = loanStatement.getEmail();
+        Client client;
+
+        if (clientRepository.existsByEmail(email)) {
+            log.info("Client with email {} already exists", email);
+
+            client = clientRepository.getClientByEmail(email);
+            log.info("Existing client = {}", client);
+
+            if (Objects.equals(client.getFirstName(), loanStatement.getFirstName()) &&
+                    Objects.equals(client.getLastName(), loanStatement.getLastName()) &&
+                    Objects.equals(client.getMiddleName(), loanStatement.getMiddleName()) &&
+                    Objects.equals(client.getBirthdate(), loanStatement.getBirthdate()) &&
+                    Objects.equals(client.getPassport().getPassportData().getSeries(), loanStatement.getPassportSeries()) &&
+                    Objects.equals(client.getPassport().getPassportData().getNumber(), loanStatement.getPassportNumber())) {
+                log.info("Full name, birthdate, series and number of passport match");
+
+                return client;
+
+            } else {
+                throw new EmailExistsException(String.format("Client with email %s already exists. Use other email.", email));
+            }
+
+        } else {
+            log.info("Client with email {} doesn't exist", email);
+
+            var passport = PassportMapper.toEntity(loanStatement.getPassportSeries(), loanStatement.getPassportNumber());
+            var savedPassport = passportRepository.save(passport);
+            log.info("Passport saved = {}", savedPassport);
+
+            var newClient = ClientMapper.toEntity(loanStatement, savedPassport);
+            client = clientRepository.save(newClient);
+            log.info("Client saved = {}", client);
+        }
+
+        return client;
     }
 }

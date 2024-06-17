@@ -33,7 +33,8 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class})
+    @ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class,
+            EmailExistsException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse conflictException(RuntimeException e) {
         log.info(e.getMessage());

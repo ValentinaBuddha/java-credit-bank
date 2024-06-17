@@ -80,6 +80,7 @@ class DealServiceImplTest {
     private final LocalDate birthdate = LocalDate.of(1980, 1, 1);
     private final String passportSeries = "1234";
     private final String passportNumber = "123456";
+    private final String email = "ivan@gmail.com";
     private final UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
     private final LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
             .amount(amount)
@@ -89,6 +90,7 @@ class DealServiceImplTest {
             .birthdate(birthdate)
             .passportSeries(passportSeries)
             .passportNumber(passportNumber)
+            .email(email)
             .build();
     private final BigDecimal monthlyPayment1 = BigDecimal.valueOf(17602.27);
     private final BigDecimal monthlyPayment2 = BigDecimal.valueOf(17552.52);
@@ -135,6 +137,7 @@ class DealServiceImplTest {
             .lastName(lastName)
             .birthdate(birthdate)
             .passport(passport)
+            .email(email)
             .build();
     private final StatementStatus status = new StatementStatus(PREAPPROVAL, LocalDateTime.now(), AUTOMATIC);
     private final List<StatementStatus> history = new ArrayList<>(List.of(status));
@@ -191,7 +194,8 @@ class DealServiceImplTest {
             .build();
 
     @Test
-    void calculateLoanOffers() {
+    void calculateLoanOffers_whenClientDoesNotExist_thenClientSaved() {
+        when(clientRepository.existsByEmail("ivan@gmail.com")).thenReturn(false);
         when(passportRepository.save(any())).thenReturn(passport);
         when(clientRepository.save(any())).thenReturn(client);
         when(statementRepository.save(any())).thenReturn(statement);
@@ -199,8 +203,30 @@ class DealServiceImplTest {
 
         final List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(loanStatement);
 
+        verify(clientRepository, times(1)).existsByEmail(any());
         verify(passportRepository, times(1)).save(any());
         verify(clientRepository, times(1)).save(any());
+        verify(statementRepository, times(1)).save(any());
+        verify(calculatorFeignClient, times(1)).getLoanOffers(any());
+        for (int i = 0; i < offers.size(); i++) {
+            assertEquals(offers.get(i).getTotalAmount(), actualOffers.get(i).getTotalAmount());
+            assertEquals(offers.get(i).getMonthlyPayment(), actualOffers.get(i).getMonthlyPayment());
+            assertEquals(offers.get(i).getRate(), actualOffers.get(i).getRate());
+            assertEquals(statement.getId(), actualOffers.get(i).getStatementId());
+        }
+    }
+
+    @Test
+    void calculateLoanOffers_whenClientExists_thenClientGet() {
+        when(clientRepository.existsByEmail("ivan@gmail.com")).thenReturn(true);
+        when(clientRepository.getClientByEmail(email)).thenReturn(client);
+        when(statementRepository.save(any())).thenReturn(statement);
+        when(calculatorFeignClient.getLoanOffers(loanStatement)).thenReturn(offers);
+
+        final List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(loanStatement);
+
+        verify(clientRepository, times(1)).existsByEmail(any());
+        verify(clientRepository, times(1)).getClientByEmail(any());
         verify(statementRepository, times(1)).save(any());
         verify(calculatorFeignClient, times(1)).getLoanOffers(any());
         for (int i = 0; i < offers.size(); i++) {
