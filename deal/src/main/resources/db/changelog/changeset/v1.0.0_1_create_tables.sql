@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS client
     first_name              VARCHAR(30)  NOT NULL,
     middle_name             VARCHAR(30),
     birth_date              DATE         NOT NULL,
-    email                   VARCHAR(255)           UNIQUE,
+    email                   VARCHAR(255),
     gender                  VARCHAR(10),
     marital_status          VARCHAR(30),
     dependent_amount        INT,
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS client
 CREATE TABLE IF NOT EXISTS credit
 (
     credit_id               UUID                   PRIMARY KEY,
-    amount                  DECIMAL      NOT NULL  CHECK (amount >= 30000),
-    term                    INT          NOT NULL  CHECK (term >= 6),
+    amount                  DECIMAL      NOT NULL,
+    term                    INT          NOT NULL,
     monthly_payment         DECIMAL      NOT NULL,
     rate                    DECIMAL      NOT NULL,
     psk                     DECIMAL      NOT NULL,
@@ -42,13 +42,6 @@ CREATE TABLE IF NOT EXISTS credit
     salary_client           BOOLEAN      NOT NULL,
     credit_status           VARCHAR(30)  NOT NULL
 );
-
--- CREATE TABLE IF NOT EXISTS status_history
--- (
---     status                  VARCHAR(20)  NOT NULL,
---     time                    TIMESTAMP    NOT NULL,
---     change_type             VARCHAR(10)  NOT NULL
--- );
 
 CREATE TABLE IF NOT EXISTS statement
 (
