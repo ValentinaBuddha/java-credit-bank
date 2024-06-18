@@ -111,11 +111,11 @@ public class ScoringDataDto {
     @Pattern(regexp = ACCOUNT_NUMBER, message = "Счёт должен содержать 20 цифр")
     private String accountNumber;
 
-    @Schema(description = "Включена ли страховка", example = "true")
+    @Schema(description = "Включена ли страховка", example = "false")
     @NotNull(message = "Необходимо указать включить ли страховку")
     private Boolean isInsuranceEnabled;
 
-    @Schema(description = "Наличие зарплатного клиента в банке", example = "true")
+    @Schema(description = "Наличие зарплатного клиента в банке", example = "false")
     @NotNull(message = "Необходимо указать наличие зарплатного клиента")
     private Boolean isSalaryClient;
 }

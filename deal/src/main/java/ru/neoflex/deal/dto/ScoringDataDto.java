@@ -43,7 +43,7 @@ public class ScoringDataDto {
     @Min(value = 30000, message = "Сумма кредита должна быть больше или равна 30 000.00 рублей")
     private BigDecimal amount;
 
-    @Schema(description = "Срок кредита в месяцах", example = "12")
+    @Schema(description = "Срок кредита в месяцах", example = "6")
     @NotNull(message = "Необходимо указать срок кредита в месяцах")
     @Min(value = 6, message = "Срок кредита должен быть больше или равен 6ти месяцам")
     private Integer term;

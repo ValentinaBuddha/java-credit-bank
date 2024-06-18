@@ -1,17 +1,19 @@
 package ru.neoflex.deal.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.neoflex.deal.model.Passport;
 import ru.neoflex.deal.model.jsonb.PassportData;
 
-public final class PassportMapper {
+@Mapper(componentModel = "spring", uses = {PassportDataMapper.class})
+public interface PassportMapper {
 
-    public static Passport toEntity(String series, String number) {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "passportData", source = "passportData")
+    Passport toPassport(PassportData passportData);
 
-        return Passport.builder()
-                .passportData(new PassportData(series, number))
-                .build();
-    }
-
-    private PassportMapper() {
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "passportData", source = "passportData")
+    Passport toFullPassport(@MappingTarget Passport passport, PassportData passportData);
 }

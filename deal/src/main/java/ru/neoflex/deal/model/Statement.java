@@ -27,7 +27,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -76,8 +75,13 @@ public class Statement {
     @Basic(fetch = FetchType.LAZY)
     @Type(type = "json")
     @Column(name = "status_history")
-    @Builder.Default
-    private List<StatementStatus> statusHistory = new ArrayList<>();
+    private List<StatementStatus> statusHistory;
+
+    public Statement(Client client, LocalDateTime creationDate, List<StatementStatus> statusHistory) {
+        this.client = client;
+        this.creationDate = creationDate;
+        this.statusHistory = statusHistory;
+    }
 
     @Override
     public boolean equals(Object o) {

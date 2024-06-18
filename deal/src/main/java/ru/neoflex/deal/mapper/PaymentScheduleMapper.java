@@ -1,21 +1,13 @@
 package ru.neoflex.deal.mapper;
 
+import org.mapstruct.Mapper;
 import ru.neoflex.deal.dto.PaymentScheduleElementDto;
 import ru.neoflex.deal.model.jsonb.PaymentScheduleElement;
 
-public final class PaymentScheduleMapper {
+import java.util.List;
 
-    public static PaymentScheduleElement toEntity(PaymentScheduleElementDto element) {
+@Mapper(componentModel = "spring")
+public interface PaymentScheduleMapper {
 
-        return new PaymentScheduleElement(
-                element.getNumber(),
-                element.getDate(),
-                element.getTotalPayment(),
-                element.getInterestPayment(),
-                element.getDebtPayment(),
-                element.getRemainingDebt());
-    }
-
-    private PaymentScheduleMapper() {
-    }
+    List<PaymentScheduleElement> mapList(List<PaymentScheduleElementDto> paymentSchedule);
 }

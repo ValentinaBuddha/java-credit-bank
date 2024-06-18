@@ -13,11 +13,11 @@ import ru.neoflex.deal.exception.EntityNotFoundException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.ClientMapper;
 import ru.neoflex.deal.mapper.CreditMapper;
-import ru.neoflex.deal.mapper.EmploymentMapper;
+import ru.neoflex.deal.mapper.EmploymentDataMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
+import ru.neoflex.deal.mapper.PassportDataMapper;
 import ru.neoflex.deal.mapper.PassportMapper;
 import ru.neoflex.deal.mapper.ScoringDataMapper;
-import ru.neoflex.deal.mapper.StatementMapper;
 import ru.neoflex.deal.model.Client;
 import ru.neoflex.deal.model.Employment;
 import ru.neoflex.deal.model.Statement;
@@ -29,6 +29,7 @@ import ru.neoflex.deal.reposiory.PassportRepository;
 import ru.neoflex.deal.reposiory.StatementRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -56,6 +57,13 @@ public class DealServiceImpl implements DealService {
     private final CreditRepository creditRepository;
     private final PassportRepository passportRepository;
     private final EmploymentRepository employmentRepository;
+    private final OfferMapper offerMapper;
+    private final CreditMapper creditMapper;
+    private final PassportDataMapper passportDataMapper;
+    private final PassportMapper passportMapper;
+    private final ClientMapper clientMapper;
+    private final EmploymentDataMapper employmentDataMapper;
+    private final ScoringDataMapper scoringDataMapper;
 
     @Override
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
@@ -63,7 +71,7 @@ public class DealServiceImpl implements DealService {
 
         var client = saveClient(loanStatement);
 
-        var statement = StatementMapper.toEntity(client);
+        var statement = new Statement(client, LocalDateTime.now(), new ArrayList<>());
         var savedStatement = statementRepository.save(statement);
         log.info("Statement saved = {}", savedStatement);
 
@@ -86,7 +94,7 @@ public class DealServiceImpl implements DealService {
 
         saveStatus(statement, CLIENT_DENIED);
 
-        var appliedOffer = OfferMapper.toEntity(loanOffer);
+        var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
         log.info("Statement with selected offer saved = {}", findStatementById(statement.getId()));
     }
@@ -98,23 +106,28 @@ public class DealServiceImpl implements DealService {
         var statement = findStatementById(UUID.fromString(statementId));
         log.info("Statement found = {}", statement);
 
-        var scoringData = ScoringDataMapper.toDto(statement, finishRegistration);
+        var offer = statement.getAppliedOffer();
+        var client = statement.getClient();
+        var passportData = client.getPassport().getPassportData();
+        var scoringData = scoringDataMapper.toScoringDto(statement, finishRegistration, offer, client, passportData);
         log.info("ScoringData prepared = {}", scoringData);
 
         var creditDto = calculatorFeignClient.calculateCredit(scoringData);
         log.info("CreditDto get from CalculatorMS = {}", creditDto);
 
-        var credit = CreditMapper.toEntity(creditDto);
+        var credit = creditMapper.toCredit(creditDto);
         var savedCredit = creditRepository.save(credit);
         log.info("Credit saved = {}", savedCredit);
 
         saveStatus(statement, CC_DENIED);
 
-        var employmentData = EmploymentMapper.toEntity(scoringData.getEmployment());
+        var employmentData = employmentDataMapper.toEmploymentData(scoringData.getEmployment());
         var employment = employmentRepository.save(new Employment(employmentData));
-        var client = findClientById(statement.getClient().getId());
-        ClientMapper.toFullEntity(client, finishRegistration, employment);
-        log.info("Fields of client updated = {}", findClientById(client.getId()));
+        var fullPassportData = passportDataMapper.toFullPassportData(client.getPassport().getPassportData(),
+                finishRegistration.getPassportIssueBranch(), finishRegistration.getPassportIssueDate());
+        var fullPassport = passportMapper.toFullPassport(client.getPassport(), fullPassportData);
+        var fullClient = clientMapper.toFullClient(client, finishRegistration, employment, fullPassport);
+        log.info("Fields of client updated = {}", fullClient);
     }
 
     private void saveStatus(Statement statement, Status status) {
@@ -133,11 +146,6 @@ public class DealServiceImpl implements DealService {
     private Statement findStatementById(UUID id) {
         return statementRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Statement with id %s wasn't found", id)));
-    }
-
-    private Client findClientById(UUID id) {
-        return clientRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Client with id %s wasn't found", id)));
     }
 
     private Client saveClient(LoanStatementRequestDto loanStatement) {
@@ -168,11 +176,13 @@ public class DealServiceImpl implements DealService {
         } else {
             log.info("Client with email {} doesn't exist", email);
 
-            var passport = PassportMapper.toEntity(loanStatement.getPassportSeries(), loanStatement.getPassportNumber());
+            var passportData = passportDataMapper.toPassportData(loanStatement.getPassportSeries(),
+                    loanStatement.getPassportNumber());
+            var passport = passportMapper.toPassport(passportData);
             var savedPassport = passportRepository.save(passport);
             log.info("Passport saved = {}", savedPassport);
 
-            var newClient = ClientMapper.toEntity(loanStatement, savedPassport);
+            var newClient = clientMapper.toClient(loanStatement, savedPassport);
             client = clientRepository.save(newClient);
             log.info("Client saved = {}", client);
         }
