@@ -39,12 +39,10 @@ class DealControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private final BigDecimal amount = BigDecimal.valueOf(100000);
-
     @Test
     void calculateLoanOffers() throws Exception {
         final var loanStatement = LoanStatementRequestDto.builder()
-                .amount(amount)
+                .amount(BigDecimal.valueOf(100000))
                 .term(12)
                 .firstName("Ivan")
                 .lastName("Ivanov")
@@ -70,7 +68,7 @@ class DealControllerTest {
     void selectLoanOffers() throws Exception {
         final var offer = LoanOfferDto.builder()
                 .statementId(UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d"))
-                .totalAmount(amount)
+                .totalAmount(BigDecimal.valueOf(100000))
                 .monthlyPayment(BigDecimal.valueOf(10000))
                 .rate(BigDecimal.valueOf(19))
                 .build();

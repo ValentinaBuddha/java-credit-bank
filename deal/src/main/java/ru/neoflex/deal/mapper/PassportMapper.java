@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import ru.neoflex.deal.model.Passport;
 import ru.neoflex.deal.model.jsonb.PassportData;
 
-@Mapper(componentModel = "spring", uses = {PassportDataMapper.class})
+@Mapper(componentModel = "spring")
 public interface PassportMapper {
 
     @Mapping(target = "id", ignore = true)

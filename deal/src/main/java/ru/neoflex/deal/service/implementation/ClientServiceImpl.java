@@ -1,4 +1,4 @@
-package ru.neoflex.deal.service;
+package ru.neoflex.deal.service.implementation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,7 @@ import ru.neoflex.deal.model.Employment;
 import ru.neoflex.deal.reposiory.ClientRepository;
 import ru.neoflex.deal.reposiory.EmploymentRepository;
 import ru.neoflex.deal.reposiory.PassportRepository;
+import ru.neoflex.deal.service.ClientService;
 
 import java.util.Objects;
 

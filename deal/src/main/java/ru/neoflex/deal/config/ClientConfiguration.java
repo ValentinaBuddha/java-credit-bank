@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import ru.neoflex.deal.feign.CustomErrorDecoder;
 
 public class ClientConfiguration {
+
     @Bean
     Logger.Level feignLoggerLevel() {
         return Logger.Level.BASIC;

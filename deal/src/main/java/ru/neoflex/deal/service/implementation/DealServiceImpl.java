@@ -1,4 +1,4 @@
-package ru.neoflex.deal.service;
+package ru.neoflex.deal.service.implementation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,6 @@ import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
 import ru.neoflex.deal.enums.Status;
-import ru.neoflex.deal.exception.EntityNotFoundException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.CreditMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
@@ -17,7 +16,10 @@ import ru.neoflex.deal.model.Statement;
 import ru.neoflex.deal.model.jsonb.StatementStatus;
 import ru.neoflex.deal.reposiory.CreditRepository;
 import ru.neoflex.deal.reposiory.StatementRepository;
+import ru.neoflex.deal.service.ClientService;
+import ru.neoflex.deal.service.DealService;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,7 @@ public class DealServiceImpl implements DealService {
         var offer = statement.getAppliedOffer();
         var client = statement.getClient();
         var passportData = client.getPassport().getPassportData();
-        var scoringData = scoringDataMapper.toScoringDataDto(statement, finishRegistration, offer, client, passportData);
+        var scoringData = scoringDataMapper.toScoringDataDto(finishRegistration, offer, client, passportData);
         log.info("ScoringData prepared = {}", scoringData);
 
         var creditDto = calculatorFeignClient.calculateCredit(scoringData);

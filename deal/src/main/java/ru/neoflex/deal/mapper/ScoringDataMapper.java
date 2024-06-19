@@ -29,8 +29,7 @@ public interface ScoringDataMapper {
     @Mapping(target = "accountNumber", source = "finishRegistration.accountNumber")
     @Mapping(target = "isInsuranceEnabled", source = "offer.isInsuranceEnabled")
     @Mapping(target = "isSalaryClient", source = "offer.isSalaryClient")
-    ScoringDataDto toScoringDataDto(Statement statement,
-                                    FinishRegistrationRequestDto finishRegistration,
+    ScoringDataDto toScoringDataDto(FinishRegistrationRequestDto finishRegistration,
                                     AppliedOffer offer,
                                     Client client,
                                     PassportData passportData);
