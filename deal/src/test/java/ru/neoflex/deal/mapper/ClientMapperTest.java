@@ -21,7 +21,7 @@ import static ru.neoflex.deal.enums.Gender.FEMALE;
 import static ru.neoflex.deal.enums.MaritalStatus.MARRIED;
 import static ru.neoflex.deal.enums.Position.TOP_MANAGER;
 
-@SpringBootTest
+@SpringBootTest(classes = ru.neoflex.deal.mapper.ClientMapperImpl.class)
 class ClientMapperTest {
 
     @Autowired

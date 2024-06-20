@@ -15,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.neoflex.deal.enums.CreditStatus.CALCULATED;
 
-@SpringBootTest
+@SpringBootTest(classes = {ru.neoflex.deal.mapper.CreditMapperImpl.class,
+        ru.neoflex.deal.mapper.PaymentScheduleMapperImpl.class})
 class CreditMapperTest {
 
     @Autowired
