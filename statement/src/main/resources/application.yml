@@ -1,0 +1,13 @@
+logging:
+  level:
+    org:
+      zalando:
+        logbook: TRACE
+      springframework:
+        web:
+          servlet:
+            DispatcherServlet: debug
+    web: info
+
+deal:
+  url: 'http://localhost:8082/deal'

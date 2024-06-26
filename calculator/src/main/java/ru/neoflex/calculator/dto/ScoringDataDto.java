@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.neoflex.calculator.annotation.MinEighteenYearsBeforeDate;
 import ru.neoflex.calculator.dto.enums.Gender;
 import ru.neoflex.calculator.dto.enums.MaritalStatus;
+import ru.neoflex.calculator.util.StringPatterns;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -21,10 +22,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static ru.neoflex.calculator.util.DateConstant.DATE_PATTERN;
-import static ru.neoflex.calculator.util.StringPatterns.ACCOUNT_NUMBER;
-import static ru.neoflex.calculator.util.StringPatterns.LATIN_ALPHABET;
-import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_NUMBER;
-import static ru.neoflex.calculator.util.StringPatterns.PASSPORT_SERIES;
 
 /**
  * Full information for scoring and final credit calculation.
@@ -50,16 +47,16 @@ public class ScoringDataDto {
 
     @Schema(description = "Имя", example = "Ivan")
     @NotBlank(message = "Необходимо указать имя")
-    @Pattern(regexp = LATIN_ALPHABET, message = "Имя должно содержать от 2 до 30 латинских букв")
+    @Pattern(regexp = StringPatterns.LATIN_ALPHABET, message = "Имя должно содержать от 2 до 30 латинских букв")
     private String firstName;
 
     @Schema(description = "Фамилия", example = "Ivanov")
     @NotBlank(message = "Необходимо указать фамилию")
-    @Pattern(regexp = LATIN_ALPHABET, message = "Фамилия должна содержать от 2 до 30 латинских букв")
+    @Pattern(regexp = StringPatterns.LATIN_ALPHABET, message = "Фамилия должна содержать от 2 до 30 латинских букв")
     private String lastName;
 
     @Schema(description = "Отчество", example = "Ivanovich")
-    @Pattern(regexp = LATIN_ALPHABET, message = "Отчество должно содержать от 2 до 30 латинских букв")
+    @Pattern(regexp = StringPatterns.LATIN_ALPHABET, message = "Отчество должно содержать от 2 до 30 латинских букв")
     private String middleName;
 
     @Schema(description = "Пол", example = "MALE")
@@ -74,12 +71,12 @@ public class ScoringDataDto {
 
     @Schema(description = "Серия паспорта", example = "1234")
     @NotBlank(message = "Необходимо указать серию паспорта")
-    @Pattern(regexp = PASSPORT_SERIES, message = "Серия паспорта должна содержать 4 цифры")
+    @Pattern(regexp = StringPatterns.PASSPORT_SERIES, message = "Серия паспорта должна содержать 4 цифры")
     private String passportSeries;
 
     @Schema(description = "Номер паспорта", example = "123456")
     @NotBlank(message = "Необходимо указать номер паспорта")
-    @Pattern(regexp = PASSPORT_NUMBER, message = "Номер паспорта должен содержать 6 цифр")
+    @Pattern(regexp = StringPatterns.PASSPORT_NUMBER, message = "Номер паспорта должен содержать 6 цифр")
     private String passportNumber;
 
     @Schema(description = "Дата выдачи паспорта", example = "1990-01-01")
@@ -108,7 +105,7 @@ public class ScoringDataDto {
 
     @Schema(description = "Номер расчетного счёта", example = "40817810100007408755")
     @NotBlank(message = "Необходимо ввести номер расчетного счёта")
-    @Pattern(regexp = ACCOUNT_NUMBER, message = "Счёт должен содержать 20 цифр")
+    @Pattern(regexp = StringPatterns.ACCOUNT_NUMBER, message = "Счёт должен содержать 20 цифр")
     private String accountNumber;
 
     @Schema(description = "Включена ли страховка", example = "false")

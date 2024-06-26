@@ -7,13 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.neoflex.calculator.dto.enums.EmploymentStatus;
 import ru.neoflex.calculator.dto.enums.Position;
+import ru.neoflex.calculator.util.StringPatterns;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
-
-import static ru.neoflex.calculator.util.StringPatterns.INN;
 
 /**
  * Job information.
@@ -33,7 +32,7 @@ public class EmploymentDto {
 
     @Schema(description = "ИНН работодателя", example = "7707123456")
     @NotNull(message = "Необходимо заполнить ИНН работодателя")
-    @Pattern(regexp = INN, message = "ИНН работодателя должен содержать 10 или 12 цифр")
+    @Pattern(regexp = StringPatterns.INN, message = "ИНН работодателя должен содержать 10 или 12 цифр")
     private String employerINN;
 
     @Schema(description = "Размер заработной платы", example = "70000")

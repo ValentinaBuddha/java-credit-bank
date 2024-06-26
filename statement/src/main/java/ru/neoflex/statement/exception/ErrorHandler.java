@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.exception;
+package ru.neoflex.statement.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,7 +14,7 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ConstraintViolationException.class, ScoringException.class})
+    @ExceptionHandler({ConstraintViolationException.class, BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse validateException(RuntimeException e) {
         log.info(e.getMessage());

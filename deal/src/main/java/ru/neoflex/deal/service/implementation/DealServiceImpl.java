@@ -62,7 +62,7 @@ public class DealServiceImpl implements DealService {
 
         saveStatus(savedStatement, PREAPPROVAL);
 
-        List<LoanOfferDto> offers = calculatorFeignClient.getLoanOffers(loanStatement);
+        List<LoanOfferDto> offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
         offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
         log.info("Offers get from CalculatorMS: {}",
                 offers.stream().map(LoanOfferDto::toString).collect(Collectors.joining(", ")));
@@ -72,7 +72,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public void selectLoanOffers(LoanOfferDto loanOffer) {
-        log.info("Select one loan offer = {}", loanOffer);
+        log.info("Select one loan offer in dealService = {}", loanOffer);
 
         var statement = findStatementById(loanOffer.getStatementId());
         log.info("Statement has found = {}", statement);
