@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.EMPLOYED;
-import static ru.neoflex.calculator.dto.enums.Gender.FEMALE;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOW_WIDOWER;
-import static ru.neoflex.calculator.dto.enums.Position.WORKER;
+import static ru.neoflex.calculator.enums.EmploymentStatus.EMPLOYED;
+import static ru.neoflex.calculator.enums.Gender.FEMALE;
+import static ru.neoflex.calculator.enums.MaritalStatus.WIDOW_WIDOWER;
+import static ru.neoflex.calculator.enums.Position.WORKER;
 
 @ExtendWith(MockitoExtension.class)
 class CreditServiceImplTest {

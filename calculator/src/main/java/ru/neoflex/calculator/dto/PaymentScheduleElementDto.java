@@ -1,5 +1,6 @@
 package ru.neoflex.calculator.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import static ru.neoflex.calculator.util.DateConstant.DATE_PATTERN;
 
 /**
  * Information about monthly payment for payment schedule.
@@ -25,6 +28,7 @@ public class PaymentScheduleElementDto {
     private Integer number;
 
     @Schema(description = "Дата платежа", example = "2024-01-11")
+    @JsonFormat(pattern = DATE_PATTERN)
     private LocalDate date;
 
     @Schema(description = "Ежемесячный платеж", example = "3060.55")

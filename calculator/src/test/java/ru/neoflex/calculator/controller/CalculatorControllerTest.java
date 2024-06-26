@@ -22,10 +22,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.SELF_EMPLOYED;
-import static ru.neoflex.calculator.dto.enums.Gender.MALE;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.MARRIED;
-import static ru.neoflex.calculator.dto.enums.Position.TOP_MANAGER;
+import static ru.neoflex.calculator.enums.EmploymentStatus.SELF_EMPLOYED;
+import static ru.neoflex.calculator.enums.Gender.MALE;
+import static ru.neoflex.calculator.enums.MaritalStatus.MARRIED;
+import static ru.neoflex.calculator.enums.Position.TOP_MANAGER;
 
 @WebMvcTest(controllers = CalculatorController.class)
 class CalculatorControllerTest {

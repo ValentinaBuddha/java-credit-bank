@@ -12,8 +12,8 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.SELF_EMPLOYED;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.UNEMPLOYED;
+import static ru.neoflex.calculator.enums.EmploymentStatus.SELF_EMPLOYED;
+import static ru.neoflex.calculator.enums.EmploymentStatus.UNEMPLOYED;
 
 class ScoringServiceImplTest {
 

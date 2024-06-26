@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
-import ru.neoflex.calculator.dto.enums.EmploymentStatus;
+import ru.neoflex.calculator.enums.EmploymentStatus;
 import ru.neoflex.calculator.exception.ScoringException;
 import ru.neoflex.calculator.service.ScoringService;
 

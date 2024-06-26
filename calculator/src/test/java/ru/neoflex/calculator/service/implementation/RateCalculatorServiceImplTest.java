@@ -16,19 +16,19 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.BUSINESS_OWNER;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.EMPLOYED;
-import static ru.neoflex.calculator.dto.enums.EmploymentStatus.SELF_EMPLOYED;
-import static ru.neoflex.calculator.dto.enums.Gender.FEMALE;
-import static ru.neoflex.calculator.dto.enums.Gender.MALE;
-import static ru.neoflex.calculator.dto.enums.Gender.NON_BINARY;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.DIVORCED;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.MARRIED;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.SINGLE;
-import static ru.neoflex.calculator.dto.enums.MaritalStatus.WIDOW_WIDOWER;
-import static ru.neoflex.calculator.dto.enums.Position.MID_MANAGER;
-import static ru.neoflex.calculator.dto.enums.Position.TOP_MANAGER;
-import static ru.neoflex.calculator.dto.enums.Position.WORKER;
+import static ru.neoflex.calculator.enums.EmploymentStatus.BUSINESS_OWNER;
+import static ru.neoflex.calculator.enums.EmploymentStatus.EMPLOYED;
+import static ru.neoflex.calculator.enums.EmploymentStatus.SELF_EMPLOYED;
+import static ru.neoflex.calculator.enums.Gender.FEMALE;
+import static ru.neoflex.calculator.enums.Gender.MALE;
+import static ru.neoflex.calculator.enums.Gender.NON_BINARY;
+import static ru.neoflex.calculator.enums.MaritalStatus.DIVORCED;
+import static ru.neoflex.calculator.enums.MaritalStatus.MARRIED;
+import static ru.neoflex.calculator.enums.MaritalStatus.SINGLE;
+import static ru.neoflex.calculator.enums.MaritalStatus.WIDOW_WIDOWER;
+import static ru.neoflex.calculator.enums.Position.MID_MANAGER;
+import static ru.neoflex.calculator.enums.Position.TOP_MANAGER;
+import static ru.neoflex.calculator.enums.Position.WORKER;
 
 @ExtendWith(MockitoExtension.class)
 class RateCalculatorServiceImplTest {
