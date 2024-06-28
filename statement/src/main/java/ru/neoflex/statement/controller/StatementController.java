@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.neoflex.statement.dto.LoanOfferDto;
 import ru.neoflex.statement.dto.LoanStatementRequestDto;
-import ru.neoflex.statement.service.StatementService;
+import ru.neoflex.statement.feign.DealFeignClient;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping("/statement")
 public class StatementController {
 
-    private final StatementService statementService;
+    private final DealFeignClient dealFeignClient;
 
     /**
      * Validate data and calculate 4 loan offers.
@@ -35,7 +35,7 @@ public class StatementController {
     @PostMapping
     public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @Valid @RequestBody
                                                   LoanStatementRequestDto loanStatement) {
-        return statementService.calculateLoanOffers(loanStatement);
+        return dealFeignClient.calculateLoanOffers(loanStatement);
     }
 
     /**
@@ -44,6 +44,6 @@ public class StatementController {
     @Operation(summary = "Выбор одного из предложений по кредиту.")
     @PostMapping("/offer")
     public void selectLoanOffers(@Parameter(required = true) @Valid @RequestBody LoanOfferDto loanOffer) {
-        statementService.selectLoanOffers(loanOffer);
+        dealFeignClient.selectLoanOffers(loanOffer);
     }
 }

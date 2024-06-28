@@ -102,6 +102,7 @@ public class DealServiceImpl implements DealService {
 
         var credit = creditMapper.toCredit(creditDto);
         var savedCredit = creditRepository.save(credit);
+        statement.setCredit(savedCredit);
         log.info("Credit saved = {}", savedCredit);
 
         saveStatus(statement, CC_DENIED);

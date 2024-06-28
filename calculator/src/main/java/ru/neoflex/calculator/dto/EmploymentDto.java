@@ -26,7 +26,7 @@ public class EmploymentDto {
     private EmploymentStatus employmentStatus;
 
     @Schema(description = "ИНН работодателя", example = "7707123456")
-    private String employerINN;
+    private String employerInn;
 
     @Schema(description = "Размер заработной платы", example = "70000")
     private BigDecimal salary;

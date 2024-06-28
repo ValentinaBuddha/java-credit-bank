@@ -34,7 +34,7 @@ public class EmploymentDto {
     @Schema(description = "ИНН работодателя", example = "7707123456")
     @NotNull(message = "Необходимо заполнить ИНН работодателя")
     @Pattern(regexp = INN, message = "ИНН работодателя должен содержать 10 или 12 цифр")
-    private String employerINN;
+    private String employerInn;
 
     @Schema(description = "Размер заработной платы", example = "70000")
     @NotNull(message = "Необходимо ввести размер заработной платы")

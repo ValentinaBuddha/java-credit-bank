@@ -5,7 +5,7 @@ import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 import ru.neoflex.statement.feign.CustomErrorDecoder;
 
-public class CustomFeignClientConfiguration {
+public class DealFeignClientConfiguration {
 
     @Bean
     Logger.Level feignLoggerLevel() {

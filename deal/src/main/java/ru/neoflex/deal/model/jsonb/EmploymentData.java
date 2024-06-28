@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class EmploymentData {
     private EmploymentStatus status;
-    private String employerINN;
+    private String employerInn;
     private BigDecimal salary;
     private Position position;
     private Integer workExperienceTotal;
