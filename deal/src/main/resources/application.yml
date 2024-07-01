@@ -45,6 +45,7 @@ logging:
             sql:
               BasicBinder: trace
     web: info
+    ru.neoflex.deal.feign: debug
 
 calculator:
   url: 'http://localhost:8081/calculator'
