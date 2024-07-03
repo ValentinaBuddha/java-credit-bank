@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import ru.neoflex.statement.dto.LoanOfferDto;
 import ru.neoflex.statement.dto.LoanStatementRequestDto;
 
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @AutoConfigureWireMock(port = 8082)
-@ActiveProfiles("test")
 class DealFeignClientTest {
 
     @Autowired
