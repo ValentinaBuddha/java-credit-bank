@@ -1,4 +1,4 @@
-package ru.neoflex.deal.annotation;
+package ru.neoflex.statement.annotation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

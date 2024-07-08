@@ -20,6 +20,11 @@ import ru.neoflex.deal.service.ClientService;
 
 import java.util.Objects;
 
+/**
+ * Service for saving clients' data.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Transactional
 @Slf4j
 @RequiredArgsConstructor

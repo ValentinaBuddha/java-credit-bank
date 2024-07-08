@@ -31,4 +31,11 @@ public class ErrorHandler {
                 .orElse("");
         return new ErrorResponse(HttpStatus.BAD_REQUEST, message);
     }
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleThrowable(Throwable e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
 }

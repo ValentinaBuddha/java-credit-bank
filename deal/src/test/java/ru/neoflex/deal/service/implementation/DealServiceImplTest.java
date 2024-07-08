@@ -79,13 +79,13 @@ class DealServiceImplTest {
         final List<LoanOfferDto> offers = List.of(new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto());
         when(clientService.saveClient(any())).thenReturn(client);
         when(statementRepository.save(any())).thenReturn(statement);
-        when(calculatorFeignClient.getLoanOffers(any())).thenReturn(offers);
+        when(calculatorFeignClient.calculateLoanOffers(any())).thenReturn(offers);
 
         final List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(new LoanStatementRequestDto());
 
         verify(clientService, times(1)).saveClient(any());
         verify(statementRepository, times(1)).save(any());
-        verify(calculatorFeignClient, times(1)).getLoanOffers(any());
+        verify(calculatorFeignClient, times(1)).calculateLoanOffers(any());
         for (int i = 0; i < offers.size(); i++) {
             assertEquals(statement.getId(), actualOffers.get(i).getStatementId());
         }

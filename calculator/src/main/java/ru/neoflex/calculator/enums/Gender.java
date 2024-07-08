@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.dto.enums;
+package ru.neoflex.calculator.enums;
 
 public enum Gender {
     FEMALE,

@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.annotation;
+package ru.neoflex.statement.annotation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

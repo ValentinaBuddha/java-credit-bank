@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({BadRequestException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validateException(BadRequestException e) {
+    public ErrorResponse validateException(RuntimeException e) {
         log.info(e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }

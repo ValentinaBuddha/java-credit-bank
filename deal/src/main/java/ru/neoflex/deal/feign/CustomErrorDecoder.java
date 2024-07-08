@@ -10,8 +10,8 @@ public class CustomErrorDecoder implements ErrorDecoder {
     public Exception decode(String methodKey, Response response) {
 
         if (response.status() == 400) {
-            return new BadRequestException("Ошибка валидации в сервисе Calculator");
+            return new BadRequestException("Bad Request Through Feign in Calculator Service");
         }
-        return new Exception("Непредвиденная ошибка сервиса Calculator");
+        return new Exception("Error in request went through feign client in Calculator Service");
     }
 }

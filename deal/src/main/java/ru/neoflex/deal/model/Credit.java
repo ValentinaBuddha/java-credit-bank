@@ -60,7 +60,7 @@ public class Credit {
     @Column(name = "payment_schedule")
     private List<PaymentScheduleElement> paymentSchedule;
 
-    @Column(name = "insurance_enable")
+    @Column(name = "insurance_enabled")
     private Boolean isInsuranceEnabled;
 
     @Column(name = "salary_client")

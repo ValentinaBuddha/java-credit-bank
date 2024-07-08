@@ -54,6 +54,7 @@ public class Client {
     private String middleName;
 
     @Column(name = "birth_date")
+
     private LocalDate birthdate;
 
     private String email;
