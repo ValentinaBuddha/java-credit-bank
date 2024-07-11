@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.neoflex.deal.dto.EmailMessage;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
@@ -18,6 +19,7 @@ import ru.neoflex.deal.reposiory.CreditRepository;
 import ru.neoflex.deal.reposiory.StatementRepository;
 import ru.neoflex.deal.service.ClientService;
 import ru.neoflex.deal.service.DealService;
+import ru.neoflex.deal.service.KafkaMessagingService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 import static ru.neoflex.deal.enums.Status.CC_DENIED;
 import static ru.neoflex.deal.enums.Status.CLIENT_DENIED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
+import static ru.neoflex.deal.enums.Theme.FINISH_REGISTRATION;
 
 /**
  * Service for credit parameters calculation and saving data.
@@ -49,6 +52,7 @@ public class DealServiceImpl implements DealService {
     private final CreditMapper creditMapper;
     private final ScoringDataMapper scoringDataMapper;
     private final ClientService clientService;
+    private final KafkaMessagingService kafkaMessagingService;
 
     @Override
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
@@ -74,14 +78,23 @@ public class DealServiceImpl implements DealService {
     public void selectLoanOffers(LoanOfferDto loanOffer) {
         log.info("Select one loan offer in dealService = {}", loanOffer);
 
-        var statement = findStatementById(loanOffer.getStatementId());
+        var id = loanOffer.getStatementId();
+        var statement = findStatementById(id);
         log.info("Statement has found = {}", statement);
 
         saveStatus(statement, CLIENT_DENIED);
 
         var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
-        log.info("Statement with selected offer saved = {}", findStatementById(statement.getId()));
+        log.info("Statement with selected offer saved = {}", findStatementById(id));
+
+        var emailMessage = EmailMessage.builder()
+                .address(statement.getClient().getEmail())
+                .theme(FINISH_REGISTRATION)
+                .statementId(String.valueOf(id))
+                .build();
+        kafkaMessagingService.sendMessage("finish-registration", emailMessage);
+        log.info("Email message sent to Kafka = {}", emailMessage);
     }
 
     @Override

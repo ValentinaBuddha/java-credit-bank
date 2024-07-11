@@ -60,4 +60,6 @@ public class DealController {
                                 FinishRegistrationRequestDto finishRegistration) {
         dealService.finishRegistration(statementId, finishRegistration);
     }
+
+
 }
