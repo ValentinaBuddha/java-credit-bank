@@ -19,7 +19,6 @@ import ru.neoflex.deal.reposiory.CreditRepository;
 import ru.neoflex.deal.reposiory.StatementRepository;
 import ru.neoflex.deal.service.ClientService;
 import ru.neoflex.deal.service.DealService;
-import ru.neoflex.deal.service.KafkaMessagingService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -29,8 +28,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
-import static ru.neoflex.deal.enums.Status.CC_DENIED;
-import static ru.neoflex.deal.enums.Status.CLIENT_DENIED;
+import static ru.neoflex.deal.enums.Status.APPROVED;
+import static ru.neoflex.deal.enums.Status.CC_APPROVED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 import static ru.neoflex.deal.enums.Theme.FINISH_REGISTRATION;
 
@@ -52,7 +51,7 @@ public class DealServiceImpl implements DealService {
     private final CreditMapper creditMapper;
     private final ScoringDataMapper scoringDataMapper;
     private final ClientService clientService;
-    private final KafkaMessagingService kafkaMessagingService;
+    private final KafkaMessagingServiceImpl kafkaMessagingServiceImpl;
 
     @Override
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
@@ -82,7 +81,7 @@ public class DealServiceImpl implements DealService {
         var statement = findStatementById(id);
         log.info("Statement has found = {}", statement);
 
-        saveStatus(statement, CLIENT_DENIED);
+        saveStatus(statement, APPROVED);
 
         var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
@@ -93,7 +92,7 @@ public class DealServiceImpl implements DealService {
                 .theme(FINISH_REGISTRATION)
                 .statementId(String.valueOf(id))
                 .build();
-        kafkaMessagingService.sendMessage("finish-registration", emailMessage);
+        kafkaMessagingServiceImpl.sendMessage("finish-registration", emailMessage);
         log.info("Email message sent to Kafka = {}", emailMessage);
     }
 
@@ -118,7 +117,7 @@ public class DealServiceImpl implements DealService {
         statement.setCredit(savedCredit);
         log.info("Credit saved = {}", savedCredit);
 
-        saveStatus(statement, CC_DENIED);
+        saveStatus(statement, CC_APPROVED);
 
         clientService.finishRegistration(client, finishRegistration);
     }
