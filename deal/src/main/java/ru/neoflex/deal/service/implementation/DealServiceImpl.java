@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.neoflex.deal.dto.CreditDto;
 import ru.neoflex.deal.dto.EmailMessage;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
@@ -30,7 +31,9 @@ import java.util.stream.Collectors;
 import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 import static ru.neoflex.deal.enums.Status.APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_APPROVED;
+import static ru.neoflex.deal.enums.Status.CC_DENIED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
+import static ru.neoflex.deal.enums.Theme.CREATE_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.FINISH_REGISTRATION;
 
 /**
@@ -109,17 +112,35 @@ public class DealServiceImpl implements DealService {
         var scoringData = scoringDataMapper.toScoringDataDto(finishRegistration, offer, client, passportData);
         log.info("ScoringData prepared = {}", scoringData);
 
-        var creditDto = calculatorFeignClient.calculateCredit(scoringData);
-        log.info("CreditDto get from CalculatorMS = {}", creditDto);
+        CreditDto creditDto = null;
+        try {
+            creditDto = calculatorFeignClient.calculateCredit(scoringData);
+            log.info("CreditDto get from CalculatorMS = {}", creditDto);
 
-        var credit = creditMapper.toCredit(creditDto);
-        var savedCredit = creditRepository.save(credit);
-        statement.setCredit(savedCredit);
-        log.info("Credit saved = {}", savedCredit);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
 
-        saveStatus(statement, CC_APPROVED);
+            saveStatus(statement, CC_DENIED);
+        }
 
-        clientService.finishRegistration(client, finishRegistration);
+        if (creditDto != null) {
+            var credit = creditMapper.toCredit(creditDto);
+            var savedCredit = creditRepository.save(credit);
+            statement.setCredit(savedCredit);
+            log.info("Credit saved = {}", savedCredit);
+
+            saveStatus(statement, CC_APPROVED);
+
+            clientService.finishRegistration(client, finishRegistration);
+
+            var emailMessage = EmailMessage.builder()
+                    .address(statement.getClient().getEmail())
+                    .theme(CREATE_DOCUMENTS)
+                    .statementId(statementId)
+                    .build();
+            kafkaMessagingServiceImpl.sendMessage("create-documents", emailMessage);
+            log.info("Email message sent to Kafka = {}", emailMessage);
+        }
     }
 
     private void saveStatus(Statement statement, Status status) {
