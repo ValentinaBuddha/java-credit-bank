@@ -9,17 +9,16 @@ import ru.neoflex.deal.dto.EmailMessage;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
-import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.CreditMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
 import ru.neoflex.deal.mapper.ScoringDataMapper;
 import ru.neoflex.deal.model.Statement;
-import ru.neoflex.deal.model.jsonb.StatementStatus;
 import ru.neoflex.deal.reposiory.CreditRepository;
 import ru.neoflex.deal.reposiory.StatementRepository;
 import ru.neoflex.deal.service.ClientService;
 import ru.neoflex.deal.service.DealService;
+import ru.neoflex.deal.service.StatementService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 import static ru.neoflex.deal.enums.Status.APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_DENIED;
@@ -55,6 +53,7 @@ public class DealServiceImpl implements DealService {
     private final ScoringDataMapper scoringDataMapper;
     private final ClientService clientService;
     private final KafkaMessagingServiceImpl kafkaMessagingServiceImpl;
+    private final StatementService statementService;
 
     @Override
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
@@ -66,7 +65,7 @@ public class DealServiceImpl implements DealService {
         var savedStatement = statementRepository.save(statement);
         log.info("Statement saved = {}", savedStatement);
 
-        saveStatus(savedStatement, PREAPPROVAL);
+        statementService.saveStatementStatus(savedStatement, PREAPPROVAL);
 
         List<LoanOfferDto> offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
         offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
@@ -84,7 +83,7 @@ public class DealServiceImpl implements DealService {
         var statement = findStatementById(id);
         log.info("Statement has found = {}", statement);
 
-        saveStatus(statement, APPROVED);
+        statementService.saveStatementStatus(statement, APPROVED);
 
         var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
@@ -120,7 +119,7 @@ public class DealServiceImpl implements DealService {
         } catch (Exception exception) {
             log.error(exception.getMessage());
 
-            saveStatus(statement, CC_DENIED);
+            statementService.saveStatementStatus(statement, CC_DENIED);
         }
 
         if (creditDto != null) {
@@ -129,7 +128,7 @@ public class DealServiceImpl implements DealService {
             statement.setCredit(savedCredit);
             log.info("Credit saved = {}", savedCredit);
 
-            saveStatus(statement, CC_APPROVED);
+            statementService.saveStatementStatus(statement, CC_APPROVED);
 
             clientService.finishRegistration(client, finishRegistration);
 
@@ -143,21 +142,8 @@ public class DealServiceImpl implements DealService {
         }
     }
 
-    private void saveStatus(Statement statement, Status status) {
-        log.info("Save new statement status = {}", status);
-
-        statement.setStatus(status);
-        log.info("Status in statement saved = {}", statement.getStatus());
-
-        var statementStatus = new StatementStatus(status, LocalDateTime.now(), AUTOMATIC);
-        List<StatementStatus> history = statement.getStatusHistory();
-        history.add(statementStatus);
-        log.info("Status saved in history: {}",
-                statement.getStatusHistory().stream().map(StatementStatus::toString).collect(Collectors.joining(", ")));
-    }
-
-    private Statement findStatementById(UUID id) {
-        return statementRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Statement with id %s wasn't found", id)));
+    private Statement findStatementById(UUID statementId) {
+        return statementRepository.findById(statementId).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Statement with id %s wasn't found", statementId)));
     }
 }

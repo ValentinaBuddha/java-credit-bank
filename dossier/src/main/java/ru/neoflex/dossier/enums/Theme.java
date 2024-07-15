@@ -1,4 +1,4 @@
-package ru.neoflex.dossier.dto;
+package ru.neoflex.dossier.enums;
 
 public enum Theme {
     FINISH_REGISTRATION,

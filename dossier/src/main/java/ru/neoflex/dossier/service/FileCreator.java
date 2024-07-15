@@ -4,5 +4,5 @@ import ru.neoflex.dossier.dto.CreditDto;
 
 public interface FileCreator {
 
-    void createTxtFile(CreditDto credit);
+    void createTxtFile(CreditDto creditDto);
 }

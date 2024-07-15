@@ -17,7 +17,7 @@ import javax.validation.ValidationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ScoringException.class, ValidationException.class})
+    @ExceptionHandler({ScoringException.class, ValidationException.class, VerifySesCodeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse validateException(RuntimeException e) {
         log.info(e.getMessage());

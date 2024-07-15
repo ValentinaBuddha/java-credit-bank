@@ -8,9 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import ru.neoflex.dossier.dto.CreditDto;
 import ru.neoflex.dossier.service.EmailService;
-import ru.neoflex.dossier.service.FileCreator;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
@@ -24,7 +22,6 @@ import java.util.Objects;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender emailSender;
-    private final FileCreator fileCreator;
     @Value("${spring.mail.username}")
     private String fromEmail;
 
@@ -52,8 +49,6 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(subject);
             helper.setText(text);
 
-            //todo: перенести в кафкасервис?
-            fileCreator.createTxtFile(new CreditDto());
             String userHome = System.getProperty("user.home");
             Path filePath = Paths.get(userHome, "IdeaProjects", "java-credit-bank", "dossier", "loan_documents.txt");
             File file = new File(filePath.toString());
