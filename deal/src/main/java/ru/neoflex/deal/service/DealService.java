@@ -50,7 +50,7 @@ public class DealService {
     private final ScoringDataMapper scoringDataMapper;
     private final ClientService clientService;
     private final KafkaMessagingService kafkaMessagingService;
-    private final StatementService statementService;
+    private final AdminService adminService;
 
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
         log.info("Calculate loan offers in dealService: loanStatement = {}", loanStatement);
@@ -61,7 +61,7 @@ public class DealService {
         var savedStatement = statementRepository.save(statement);
         log.info("Statement saved = {}", savedStatement);
 
-        statementService.saveStatementStatus(savedStatement, PREAPPROVAL);
+        adminService.saveStatementStatus(savedStatement, PREAPPROVAL);
 
         List<LoanOfferDto> offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
         offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
@@ -78,7 +78,7 @@ public class DealService {
         var statement = findStatementById(id);
         log.info("Statement has found = {}", statement);
 
-        statementService.saveStatementStatus(statement, APPROVED);
+        adminService.saveStatementStatus(statement, APPROVED);
 
         var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
@@ -113,7 +113,7 @@ public class DealService {
         } catch (Exception exception) {
             log.error(exception.getMessage());
 
-            statementService.saveStatementStatus(statement, CC_DENIED);
+            adminService.saveStatementStatus(statement, CC_DENIED);
         }
 
         if (creditDto != null) {
@@ -122,7 +122,7 @@ public class DealService {
             statement.setCredit(savedCredit);
             log.info("Credit saved = {}", savedCredit);
 
-            statementService.saveStatementStatus(statement, CC_APPROVED);
+            adminService.saveStatementStatus(statement, CC_APPROVED);
 
             clientService.finishRegistration(client, finishRegistration);
 

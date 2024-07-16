@@ -21,7 +21,7 @@ import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class StatementService {
+public class AdminService {
 
     private final StatementRepository statementRepository;
     private final StatementMapper statementMapper;

@@ -27,7 +27,7 @@ import static ru.neoflex.deal.enums.Theme.SEND_SES;
 public class DocumentService {
 
     private final StatementRepository statementRepository;
-    private final StatementService statementService;
+    private final AdminService adminService;
     private final KafkaMessagingService kafkaMessagingService;
     private static final String SENT_TO_KAFKA = "Message sent to Kafka = {}";
     private static final String STATEMENT_FOUND = "Statement found = {}";
@@ -36,7 +36,7 @@ public class DocumentService {
         var statement = findStatementById(UUID.fromString(statementId));
         log.info(STATEMENT_FOUND, statement);
 
-        statementService.saveStatementStatus(statement, PREPARE_DOCUMENTS);
+        adminService.saveStatementStatus(statement, PREPARE_DOCUMENTS);
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())
@@ -71,10 +71,10 @@ public class DocumentService {
             throw new VerifySesCodeException("Ses code is invalid.");
         }
 
-        statementService.saveStatementStatus(statementId, DOCUMENT_SIGNED);
+        adminService.saveStatementStatus(statementId, DOCUMENT_SIGNED);
         statement.setSignDate(LocalDateTime.now());
         statement.getCredit().setCreditStatus(ISSUED);
-        statementService.saveStatementStatus(statementId, Status.CREDIT_ISSUED);
+        adminService.saveStatementStatus(statementId, Status.CREDIT_ISSUED);
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())
