@@ -9,6 +9,7 @@ import ru.neoflex.deal.dto.EmailMessage;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
+import ru.neoflex.deal.exception.ScoringException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.CreditMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
@@ -43,14 +44,14 @@ import static ru.neoflex.deal.enums.Theme.FINISH_REGISTRATION;
 public class DealService {
 
     private final CalculatorFeignClient calculatorFeignClient;
+    private final KafkaMessagingService kafkaMessagingService;
+    private final ClientService clientService;
+    private final AdminService adminService;
     private final StatementRepository statementRepository;
     private final CreditRepository creditRepository;
     private final OfferMapper offerMapper;
     private final CreditMapper creditMapper;
     private final ScoringDataMapper scoringDataMapper;
-    private final ClientService clientService;
-    private final KafkaMessagingService kafkaMessagingService;
-    private final AdminService adminService;
 
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
         log.info("Calculate loan offers in dealService: loanStatement = {}", loanStatement);
@@ -110,7 +111,7 @@ public class DealService {
             creditDto = calculatorFeignClient.calculateCredit(scoringData);
             log.info("CreditDto get from CalculatorMS = {}", creditDto);
 
-        } catch (Exception exception) {
+        } catch (ScoringException exception) {
             log.error(exception.getMessage());
 
             adminService.saveStatementStatus(statement, CC_DENIED);

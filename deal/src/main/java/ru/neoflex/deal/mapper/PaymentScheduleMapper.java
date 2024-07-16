@@ -10,4 +10,6 @@ import java.util.List;
 public interface PaymentScheduleMapper {
 
     List<PaymentScheduleElement> mapList(List<PaymentScheduleElementDto> paymentSchedule);
+
+    List<PaymentScheduleElementDto> mapListToDto(List<PaymentScheduleElement> paymentSchedule);
 }

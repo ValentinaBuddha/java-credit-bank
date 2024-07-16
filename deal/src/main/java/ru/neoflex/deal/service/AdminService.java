@@ -50,7 +50,7 @@ public class AdminService {
         var statement = findStatementById(UUID.fromString(statementId));
         log.info("Statement found = {}", statement);
 
-        return statementMapper.toDto(statement);
+        return statementMapper.toStatementDto(statement);
     }
 
     private Statement findStatementById(UUID id) {
