@@ -16,4 +16,5 @@ import java.util.UUID;
 public class StatementDto {
     private UUID id;
     private CreditDto credit;
+    private String sesCode;
 }

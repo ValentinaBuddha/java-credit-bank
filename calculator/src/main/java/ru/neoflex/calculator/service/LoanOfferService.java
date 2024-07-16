@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 public class LoanOfferService {
 
     private final AnnuityCalculatorService annuityCalculatorService;
-
     private final RateCalculatorService rateCalculatorService;
 
     public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {

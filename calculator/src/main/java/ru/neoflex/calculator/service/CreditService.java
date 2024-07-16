@@ -20,9 +20,7 @@ import java.util.List;
 public class CreditService {
 
     private final ScoringService scoringService;
-
     private final AnnuityCalculatorService annuityCalculatorService;
-
     private final RateCalculatorService rateCalculatorService;
 
     public CreditDto calculateCredit(ScoringDataDto scoringData) {

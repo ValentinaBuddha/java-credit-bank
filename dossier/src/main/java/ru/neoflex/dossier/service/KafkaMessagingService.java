@@ -27,6 +27,7 @@ public class KafkaMessagingService {
             properties = {"spring.json.value.default.type=ru.neoflex.dossier.dto.EmailMessage"})
     public void sendEmailWithFinishRegistration(@Payload EmailMessage emailMessage) {
         log.info(MESSAGE_CONSUMED, emailMessage);
+
         String text = "Ваша заявка предварительно одобрена, завершите оформление.";
         emailService.sendSimpleMessage(emailMessage.getAddress(), emailMessage.getTheme().toString(), text);
     }
@@ -37,6 +38,7 @@ public class KafkaMessagingService {
             properties = {"spring.json.value.default.type=ru.neoflex.dossier.dto.EmailMessage"})
     public void sendEmailWithCreateDocuments(EmailMessage emailMessage) {
         log.info(MESSAGE_CONSUMED, emailMessage);
+
         String text = "Ваша заявка окончательно одобрена.\n[Сформировать документы.](ссылка)";
         emailService.sendSimpleMessage(emailMessage.getAddress(), emailMessage.getTheme().toString(), text);
     }

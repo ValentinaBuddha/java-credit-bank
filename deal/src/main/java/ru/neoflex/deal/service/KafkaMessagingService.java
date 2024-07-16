@@ -14,6 +14,8 @@ public class KafkaMessagingService {
     private final KafkaTemplate<String , Object> kafkaTemplate;
 
     public void sendMessage(String sendClientTopic, EmailMessage emailMessage) {
+        log.info("Send message to kafka = {}", emailMessage);
         kafkaTemplate.send(sendClientTopic, emailMessage.getStatementId(), emailMessage);
+        log.info("Message sent to kafka topic = {}", sendClientTopic);
     }
 }

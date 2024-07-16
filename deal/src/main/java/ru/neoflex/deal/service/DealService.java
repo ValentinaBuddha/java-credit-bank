@@ -66,8 +66,9 @@ public class DealService {
 
         List<LoanOfferDto> offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
         offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
-        log.info("Offers get from CalculatorMS: {}",
-                offers.stream().map(LoanOfferDto::toString).collect(Collectors.joining(", ")));
+        log.info("Offers get from CalculatorMS: {}", offers.stream()
+                .map(LoanOfferDto::toString)
+                .collect(Collectors.joining(", ")));
 
         return offers;
     }
@@ -77,7 +78,6 @@ public class DealService {
 
         var id = loanOffer.getStatementId();
         var statement = findStatementById(id);
-        log.info("Statement has found = {}", statement);
 
         adminService.saveStatementStatus(statement, APPROVED);
 
@@ -91,14 +91,12 @@ public class DealService {
                 .statementId(String.valueOf(id))
                 .build();
         kafkaMessagingService.sendMessage("finish-registration", emailMessage);
-        log.info("Email message sent to Kafka = {}", emailMessage);
     }
 
     public void finishRegistration(String statementId, FinishRegistrationRequestDto finishRegistration) {
         log.info("Finish registration: statementId = {}, finishRegistration = {}", statementId, finishRegistration);
 
         var statement = findStatementById(UUID.fromString(statementId));
-        log.info("Statement found = {}", statement);
 
         var offer = statement.getAppliedOffer();
         var client = statement.getClient();
@@ -112,7 +110,7 @@ public class DealService {
             log.info("CreditDto get from CalculatorMS = {}", creditDto);
 
         } catch (ScoringException exception) {
-            log.error(exception.getMessage());
+            log.info(exception.getMessage());
 
             adminService.saveStatementStatus(statement, CC_DENIED);
         }
@@ -133,12 +131,13 @@ public class DealService {
                     .statementId(statementId)
                     .build();
             kafkaMessagingService.sendMessage("create-documents", emailMessage);
-            log.info("Email message sent to Kafka = {}", emailMessage);
         }
     }
 
     private Statement findStatementById(UUID statementId) {
-        return statementRepository.findById(statementId).orElseThrow(() ->
+        var statement = statementRepository.findById(statementId).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Statement with id %s wasn't found", statementId)));
+        log.info("Statement found = {}", statement);
+        return statement;
     }
 }

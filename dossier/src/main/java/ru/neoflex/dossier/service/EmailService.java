@@ -25,6 +25,8 @@ public class EmailService {
     private String fromEmail;
 
     public void sendSimpleMessage(String to, String subject, String text) {
+        log.info("Send simple email");
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
@@ -32,12 +34,15 @@ public class EmailService {
             message.setSubject(subject);
             message.setText(text);
             emailSender.send(message);
+
         } catch (Exception exception) {
-            log.error("Sending email exception: " + exception.getMessage());
+            log.info("Sending email exception: " + exception.getMessage());
         }
     }
 
     public void sendMessageWithAttachment(String to, String subject, String text) {
+        log.info("Send email with attachment");
+
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -53,8 +58,9 @@ public class EmailService {
             helper.addAttachment(Objects.requireNonNull(documents.getFilename()), documents);
 
             emailSender.send(message);
+
         } catch (Exception exception) {
-            log.error("Sending email exception: " + exception.getMessage());
+            log.info("Sending email exception: " + exception.getMessage());
         }
     }
 }

@@ -35,26 +35,25 @@ public class AdminService {
         var statementStatus = new StatementStatus(status, LocalDateTime.now(), AUTOMATIC);
         List<StatementStatus> history = statement.getStatusHistory();
         history.add(statementStatus);
-        log.info("Status saved in history: {}",
-                statement.getStatusHistory().stream().map(StatementStatus::toString).collect(Collectors.joining(", ")));
+        log.info("Status saved in history: {}", statement.getStatusHistory().stream()
+                .map(StatementStatus::toString)
+                .collect(Collectors.joining(", ")));
     }
 
     public void saveStatementStatus(String statementId, Status status) {
         var statement = findStatementById(UUID.fromString(statementId));
-        log.info("Statement found = {}", statement);
-
         saveStatementStatus(statement, status);
     }
 
     public StatementDto findStatementById(String statementId) {
         var statement = findStatementById(UUID.fromString(statementId));
-        log.info("Statement found = {}", statement);
-
         return statementMapper.toStatementDto(statement);
     }
 
-    private Statement findStatementById(UUID id) {
-        return statementRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Statement with id %s wasn't found", id)));
+    private Statement findStatementById(UUID statementId) {
+        var statement = statementRepository.findById(statementId).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Statement with id %s wasn't found", statementId)));
+        log.info("Statement found = {}", statement);
+        return statement;
     }
 }

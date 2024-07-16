@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class FileCreator {
 
     public void createTxtFile(CreditDto creditDto) {
+        log.info("Create file with txt format");
 
         String userHome = System.getProperty("user.home");
         Path filePath = Paths.get(userHome, "IdeaProjects", "java-credit-bank", "dossier", "loan_documents.txt");
@@ -30,11 +31,13 @@ public class FileCreator {
             writer.write("Monthly Payment " + creditDto.getMonthlyPayment() + "\n");
             writer.write("Rate " + creditDto.getRate() + "\n");
             writer.write("PSK " + creditDto.getPsk() + "\n");
+
             if (Boolean.TRUE.equals(creditDto.getIsInsuranceEnabled())) {
                 writer.write("Insurance enabled\n");
             } else {
                 writer.write("Insurance is not enabled\n");
             }
+
             if (Boolean.TRUE.equals(creditDto.getIsSalaryClient())) {
                 writer.write("Salary Client - Yes\n\n");
             } else {
@@ -56,7 +59,7 @@ public class FileCreator {
             log.info("File created successfully.");
 
         } catch (IOException e) {
-            log.error("An error occurred while creating the file.");
+            log.info("An error occurred while creating the file.");
             e.printStackTrace();
         }
     }

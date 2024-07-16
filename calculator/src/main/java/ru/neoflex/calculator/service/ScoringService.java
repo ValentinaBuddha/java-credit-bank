@@ -54,6 +54,8 @@ public class ScoringService {
         if (!reasonsForRefusal.isEmpty()) {
             throw new ScoringException(String.format("Scoring result - rejection. Reasons: %s",
                     String.join(", ", reasonsForRefusal)));
+        } else {
+            log.info("Scoring was successful!");
         }
     }
 }

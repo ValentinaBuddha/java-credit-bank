@@ -29,12 +29,11 @@ public class DocumentService {
     private final StatementRepository statementRepository;
     private final AdminService adminService;
     private final KafkaMessagingService kafkaMessagingService;
-    private static final String SENT_TO_KAFKA = "Message sent to Kafka = {}";
-    private static final String STATEMENT_FOUND = "Statement found = {}";
 
     public void sendDocuments(String statementId) {
+        log.info("Create kafka message to send documents for statementId = {}", statementId);
+
         var statement = findStatementById(UUID.fromString(statementId));
-        log.info(STATEMENT_FOUND, statement);
 
         adminService.saveStatementStatus(statement, PREPARE_DOCUMENTS);
 
@@ -44,15 +43,16 @@ public class DocumentService {
                 .statementId(statementId)
                 .build();
         kafkaMessagingService.sendMessage("send-documents", emailMessage);
-        log.info(SENT_TO_KAFKA, emailMessage);
     }
 
     public void signDocuments(String statementId) {
+        log.info("Create kafka message to send sesCode for statementId = {}", statementId);
+
         var statement = findStatementById(UUID.fromString(statementId));
-        log.info(STATEMENT_FOUND, statement);
 
         int sesCode = SesCodeGenerator.generateSesCode();
         statement.setSesCode(String.valueOf(sesCode));
+        log.info("SesCode generated = {} and saved to statement = {}", sesCode, statement);
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())
@@ -60,21 +60,24 @@ public class DocumentService {
                 .statementId(statementId)
                 .build();
         kafkaMessagingService.sendMessage("send-ses", emailMessage);
-        log.info(SENT_TO_KAFKA, emailMessage);
     }
 
     public void verifySesCode(String statementId, String sesCode) {
+        log.info("Create kafka message to verify sesCode and issue credit for statementId = {}", statementId);
+
         var statement = findStatementById(UUID.fromString(statementId));
-        log.info(STATEMENT_FOUND, statement);
 
         if (!statement.getSesCode().equals(sesCode)) {
+            log.info("Ses code is invalid.");
             throw new VerifySesCodeException("Ses code is invalid.");
         }
 
         adminService.saveStatementStatus(statementId, DOCUMENT_SIGNED);
+        log.info("Credit documents signed.");
         statement.setSignDate(LocalDateTime.now());
         statement.getCredit().setCreditStatus(ISSUED);
         adminService.saveStatementStatus(statementId, Status.CREDIT_ISSUED);
+        log.info("Credit issued.");
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())
@@ -82,11 +85,12 @@ public class DocumentService {
                 .statementId(statementId)
                 .build();
         kafkaMessagingService.sendMessage("credit-issued", emailMessage);
-        log.info(SENT_TO_KAFKA, emailMessage);
     }
 
     private Statement findStatementById(UUID statementId) {
-        return statementRepository.findById(statementId).orElseThrow(() ->
+        var statement = statementRepository.findById(statementId).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Statement with id %s wasn't found", statementId)));
+        log.info("Statement found = {}", statement);
+        return statement;
     }
 }

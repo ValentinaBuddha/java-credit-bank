@@ -39,6 +39,7 @@ public class ClientService {
     private final EmploymentDataMapper employmentDataMapper;
 
     public Client saveClient(LoanStatementRequestDto loanStatement) {
+        log.info("Save client from statement = {}", loanStatement);
 
         var email = loanStatement.getEmail();
         Client client;
@@ -53,6 +54,7 @@ public class ClientService {
                 log.info("Full name, birthdate, series and number of passport match");
                 return client;
             } else {
+                log.info("Full name, birthdate, series and number of passport didn't match");
                 throw new EmailExistsException(String.format("Client with email %s already exists. Use other email.", email));
             }
 
@@ -74,6 +76,7 @@ public class ClientService {
     }
 
     public void finishRegistration(Client client, FinishRegistrationRequestDto finishRegistration) {
+        log.info("Save full data of client with id = {}", client.getId());
         var employmentData = employmentDataMapper.toEmploymentData(finishRegistration.getEmployment());
         var employment = employmentRepository.save(new Employment(employmentData));
         var fullPassportData = passportDataMapper.toFullPassportData(client.getPassport().getPassportData(),
