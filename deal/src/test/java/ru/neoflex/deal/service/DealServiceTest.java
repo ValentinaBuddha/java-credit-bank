@@ -1,4 +1,4 @@
-package ru.neoflex.deal.service.implementation;
+package ru.neoflex.deal.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,6 @@ import ru.neoflex.deal.model.jsonb.AppliedOffer;
 import ru.neoflex.deal.model.jsonb.PassportData;
 import ru.neoflex.deal.reposiory.CreditRepository;
 import ru.neoflex.deal.reposiory.StatementRepository;
-import ru.neoflex.deal.service.ClientService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -43,7 +42,7 @@ import static ru.neoflex.deal.enums.Status.CLIENT_DENIED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 
 @ExtendWith(MockitoExtension.class)
-class DealServiceImplTest {
+class DealServiceTest {
 
     @Mock
     private StatementRepository statementRepository;
@@ -60,7 +59,7 @@ class DealServiceImplTest {
     @Mock
     private ScoringDataMapper scoringDataMapper;
     @InjectMocks
-    private DealServiceImpl dealService;
+    private DealService dealService;
 
     private final UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
     private final PassportData passportData = new PassportData();

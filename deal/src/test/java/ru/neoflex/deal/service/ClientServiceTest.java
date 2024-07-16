@@ -1,5 +1,6 @@
-package ru.neoflex.deal.service.implementation;
+package ru.neoflex.deal.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClientServiceImplTest {
+class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
@@ -48,7 +49,7 @@ class ClientServiceImplTest {
     @Mock
     private EmploymentDataMapper employmentDataMapper;
     @InjectMocks
-    private ClientServiceImpl clientService;
+    private ClientService clientService;
 
     private final String email = "ivan@gmail.com";
     private final LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
@@ -78,7 +79,7 @@ class ClientServiceImplTest {
         when(clientMapper.toClient(loanStatement, passport)).thenReturn(client);
         when(clientRepository.save(client)).thenReturn(client);
 
-        assertDoesNotThrow(() -> clientService.saveClient(loanStatement));
+        Assertions.assertDoesNotThrow(() -> clientService.saveClient(loanStatement));
 
         verify(clientRepository, times(1)).existsByEmail(email);
         verify(passportDataMapper, times(1)).toPassportData(any(), any());
@@ -93,7 +94,7 @@ class ClientServiceImplTest {
         when(clientRepository.existsByEmail(email)).thenReturn(true);
         when(clientRepository.getClientByEmail(email)).thenReturn(client);
 
-        assertDoesNotThrow(() -> clientService.saveClient(loanStatement));
+        Assertions.assertDoesNotThrow(() -> clientService.saveClient(loanStatement));
 
         verify(clientRepository, times(1)).existsByEmail(email);
         verify(clientRepository, times(1)).getClientByEmail(email);
