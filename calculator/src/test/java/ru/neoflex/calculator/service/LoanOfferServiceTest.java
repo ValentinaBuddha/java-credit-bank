@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.service.implementation;
+package ru.neoflex.calculator.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.neoflex.calculator.dto.LoanOfferDto;
 import ru.neoflex.calculator.dto.LoanStatementRequestDto;
-import ru.neoflex.calculator.service.AnnuityCalculatorService;
-import ru.neoflex.calculator.service.RateCalculatorService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LoanOfferServiceImplTest {
+class LoanOfferServiceTest {
 
     @Mock
     private AnnuityCalculatorService annuityCalculator;
@@ -28,7 +26,7 @@ class LoanOfferServiceImplTest {
     private RateCalculatorService rateCalculator;
 
     @InjectMocks
-    private LoanOfferServiceImpl loanOfferService;
+    private LoanOfferService loanOfferService;
 
     private final BigDecimal amount = BigDecimal.valueOf(100000);
     private final BigDecimal amountWihInsurance = BigDecimal.valueOf(105000);

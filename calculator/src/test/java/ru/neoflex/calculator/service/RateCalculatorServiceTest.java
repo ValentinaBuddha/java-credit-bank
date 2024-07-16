@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.service.implementation;
+package ru.neoflex.calculator.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,13 +31,13 @@ import static ru.neoflex.calculator.enums.Position.TOP_MANAGER;
 import static ru.neoflex.calculator.enums.Position.WORKER;
 
 @ExtendWith(MockitoExtension.class)
-class RateCalculatorServiceImplTest {
+class RateCalculatorServiceTest {
 
     @Mock
     private RateConfiguration rateConfiguration;
 
     @InjectMocks
-    private RateCalculatorServiceImpl rateCalculator;
+    private RateCalculatorService rateCalculator;
 
     private final Double creditRate = 19.00;
     private final BigDecimal creditRateBigDec = BigDecimal.valueOf(creditRate);

@@ -1,10 +1,9 @@
-package ru.neoflex.calculator.service.implementation;
+package ru.neoflex.calculator.service;
 
 import org.junit.jupiter.api.Test;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
 import ru.neoflex.calculator.exception.ScoringException;
-import ru.neoflex.calculator.service.ScoringService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.neoflex.calculator.enums.EmploymentStatus.SELF_EMPLOYED;
 import static ru.neoflex.calculator.enums.EmploymentStatus.UNEMPLOYED;
 
-class ScoringServiceImplTest {
+class ScoringServiceTest {
 
-    private final ScoringService scoringService = new ScoringServiceImpl();
+    private final ScoringService scoringService = new ScoringService();
     private final LocalDate birthdateSixtyFiveYearsAge = LocalDate.now().minusYears(65);
     private final LocalDate birthdateTwentyYearsAge = LocalDate.now().minusYears(20);
     private final EmploymentDto employment = EmploymentDto.builder()
@@ -43,7 +42,7 @@ class ScoringServiceImplTest {
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
-        assertEquals("Rejection. Working status unemployed.", exception.getMessage());
+        assertEquals("Scoring result - rejection. Reasons: Working status unemployed", exception.getMessage());
     }
 
     @Test
@@ -53,7 +52,7 @@ class ScoringServiceImplTest {
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
-        assertEquals("Rejection. The loan amount is more than 25 salaries.", exception.getMessage());
+        assertEquals("Scoring result - rejection. Reasons: The loan amount is more than 25 salaries", exception.getMessage());
     }
 
     @Test
@@ -63,7 +62,7 @@ class ScoringServiceImplTest {
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
-        assertEquals("Rejection. Age over 65 years.", exception.getMessage());
+        assertEquals("Scoring result - rejection. Reasons: Age over 65 years", exception.getMessage());
     }
 
     @Test
@@ -88,7 +87,7 @@ class ScoringServiceImplTest {
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
-        assertEquals("Rejection. Age less than 20 years.", exception.getMessage());
+        assertEquals("Scoring result - rejection. Reasons: Age less than 20 years", exception.getMessage());
     }
 
     @Test
@@ -113,7 +112,7 @@ class ScoringServiceImplTest {
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
-        assertEquals("Rejection. Total experience less than 18 months.", exception.getMessage());
+        assertEquals("Scoring result - rejection. Reasons: Total experience less than 18 months", exception.getMessage());
     }
 
     @Test
@@ -129,7 +128,7 @@ class ScoringServiceImplTest {
 
         final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
-        assertEquals("Rejection. Current experience less than 3 months.", exception.getMessage());
+        assertEquals("Scoring result - rejection. Reasons: Current experience less than 3 months", exception.getMessage());
     }
 
     @Test

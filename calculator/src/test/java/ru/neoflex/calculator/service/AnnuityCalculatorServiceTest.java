@@ -1,4 +1,4 @@
-package ru.neoflex.calculator.service.implementation;
+package ru.neoflex.calculator.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AnnuityCalculatorServiceImplTest {
+class AnnuityCalculatorServiceTest {
 
     @Mock
     private RateConfiguration rateConfiguration;
 
     @InjectMocks
-    private AnnuityCalculatorServiceImpl annuityCalculator;
+    private AnnuityCalculatorService annuityCalculator;
 
     private final BigDecimal amount = BigDecimal.valueOf(100000);
     private final BigDecimal amountWihInsurance = BigDecimal.valueOf(105000.00);
