@@ -1,9 +1,0 @@
-Credit Amount null
-Term null
-Monthly Payment null
-Rate null
-PSK null
-Insurance is not enabled
-Salary Client - No
-
-Number,Date,Total Payment,Interest Payment,Debt Payment,Remaining Debt

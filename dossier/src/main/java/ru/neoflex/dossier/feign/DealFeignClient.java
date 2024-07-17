@@ -9,7 +9,6 @@ import ru.neoflex.dossier.config.DealFeignClientConfiguration;
 import ru.neoflex.dossier.dto.StatementDto;
 import ru.neoflex.dossier.enums.Status;
 
-
 @FeignClient(value = "deal", url = "${deal.url}", configuration = DealFeignClientConfiguration.class)
 public interface DealFeignClient {
 
