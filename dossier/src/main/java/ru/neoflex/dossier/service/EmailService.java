@@ -33,7 +33,10 @@ public class EmailService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);
+            log.info("Message created");
+
             emailSender.send(message);
+            log.info("Message sent");
 
         } catch (Exception exception) {
             log.info("Sending email exception: " + exception.getMessage());
@@ -50,14 +53,17 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);
+            log.info("Message created");
 
             String userHome = System.getProperty("user.home");
             Path filePath = Paths.get(userHome, "IdeaProjects", "java-credit-bank", "dossier", "loan_documents.txt");
             File file = new File(filePath.toString());
             FileSystemResource documents = new FileSystemResource(file);
             helper.addAttachment(Objects.requireNonNull(documents.getFilename()), documents);
+            log.info("Attachment added");
 
             emailSender.send(message);
+            log.info("Message sent");
 
         } catch (Exception exception) {
             log.info("Sending email exception: " + exception.getMessage());
