@@ -7,6 +7,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
@@ -24,6 +25,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Async
     public void sendSimpleMessage(String to, String subject, String text) {
         log.info("Send simple email");
 
@@ -43,6 +45,7 @@ public class EmailService {
         }
     }
 
+    @Async
     public void sendMessageWithAttachment(String to, String subject, String text) {
         log.info("Send email with attachment");
 

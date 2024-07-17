@@ -31,6 +31,7 @@ import static ru.neoflex.deal.enums.Status.CC_DENIED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 import static ru.neoflex.deal.enums.Theme.CREATE_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.FINISH_REGISTRATION;
+import static ru.neoflex.deal.enums.Theme.STATEMENT_DENIED;
 
 /**
  * Service for credit parameters calculation and saving data.
@@ -113,6 +114,13 @@ public class DealService {
             log.info(exception.getMessage());
 
             adminService.saveStatementStatus(statement, CC_DENIED);
+
+            var emailMessage = EmailMessage.builder()
+                    .address(statement.getClient().getEmail())
+                    .theme(STATEMENT_DENIED)
+                    .statementId(statementId)
+                    .build();
+            kafkaMessagingService.sendMessage("statement-denied", emailMessage);
         }
 
         if (creditDto != null) {

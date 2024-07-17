@@ -3,6 +3,7 @@ package ru.neoflex.deal.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.dto.EmailMessage;
 import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.enums.Theme;
@@ -21,6 +22,7 @@ import static ru.neoflex.deal.enums.Status.PREPARE_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.SEND_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.SEND_SES;
 
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -63,7 +65,7 @@ public class DocumentService {
     }
 
     public void verifySesCode(String statementId, String sesCode) {
-        log.info("Create kafka message to verify sesCode and issue credit for statementId = {}", statementId);
+        log.info("Create kafka message to verify sesCode = {} and issue credit for statementId = {}", sesCode, statementId);
 
         var statement = findStatementById(UUID.fromString(statementId));
 

@@ -3,6 +3,7 @@ package ru.neoflex.deal.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.dto.StatementDto;
 import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.mapper.StatementMapper;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -45,6 +47,7 @@ public class AdminService {
         saveStatementStatus(statement, status);
     }
 
+    @Transactional(readOnly = true)
     public StatementDto findStatementById(String statementId) {
         var statement = findStatementById(UUID.fromString(statementId));
         return statementMapper.toStatementDto(statement);

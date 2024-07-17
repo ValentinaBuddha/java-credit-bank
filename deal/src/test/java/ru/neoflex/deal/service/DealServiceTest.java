@@ -156,5 +156,6 @@ class DealServiceTest {
         verify(scoringDataMapper, times(1)).toScoringDataDto(any(), any(), any(), any());
         verify(calculatorFeignClient, times(1)).calculateCredit(any());
         verify(adminService, times(1)).saveStatementStatus((Statement) any(), any());
+        verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
     }
 }
