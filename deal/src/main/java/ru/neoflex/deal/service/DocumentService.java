@@ -16,6 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 import static ru.neoflex.deal.enums.CreditStatus.ISSUED;
 import static ru.neoflex.deal.enums.Status.DOCUMENT_SIGNED;
 import static ru.neoflex.deal.enums.Status.PREPARE_DOCUMENTS;
@@ -37,7 +38,7 @@ public class DocumentService {
 
         var statement = findStatementById(UUID.fromString(statementId));
 
-        adminService.saveStatementStatus(statement, PREPARE_DOCUMENTS);
+        adminService.saveStatementStatus(statement, PREPARE_DOCUMENTS, AUTOMATIC);
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())
@@ -74,11 +75,11 @@ public class DocumentService {
             throw new VerifySesCodeException("Ses code is invalid.");
         }
 
-        adminService.saveStatementStatus(statementId, DOCUMENT_SIGNED);
+        adminService.saveStatementStatus(statement, DOCUMENT_SIGNED, AUTOMATIC);
         log.info("Credit documents signed.");
         statement.setSignDate(LocalDateTime.now());
         statement.getCredit().setCreditStatus(ISSUED);
-        adminService.saveStatementStatus(statementId, Status.CREDIT_ISSUED);
+        adminService.saveStatementStatus(statement, Status.CREDIT_ISSUED, AUTOMATIC);
         log.info("Credit issued.");
 
         var emailMessage = EmailMessage.builder()

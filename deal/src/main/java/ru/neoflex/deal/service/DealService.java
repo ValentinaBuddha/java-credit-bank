@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 import static ru.neoflex.deal.enums.Status.APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_DENIED;
@@ -63,7 +64,7 @@ public class DealService {
         var savedStatement = statementRepository.save(statement);
         log.info("Statement saved = {}", savedStatement);
 
-        adminService.saveStatementStatus(savedStatement, PREAPPROVAL);
+        adminService.saveStatementStatus(savedStatement, PREAPPROVAL, AUTOMATIC);
 
         List<LoanOfferDto> offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
         offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
@@ -80,7 +81,7 @@ public class DealService {
         var id = loanOffer.getStatementId();
         var statement = findStatementById(id);
 
-        adminService.saveStatementStatus(statement, APPROVED);
+        adminService.saveStatementStatus(statement, APPROVED, AUTOMATIC);
 
         var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
@@ -113,7 +114,7 @@ public class DealService {
         } catch (ScoringException exception) {
             log.info(exception.getMessage());
 
-            adminService.saveStatementStatus(statement, CC_DENIED);
+            adminService.saveStatementStatus(statement, CC_DENIED, AUTOMATIC);
 
             var emailMessage = EmailMessage.builder()
                     .address(statement.getClient().getEmail())
@@ -129,7 +130,7 @@ public class DealService {
             statement.setCredit(savedCredit);
             log.info("Credit saved = {}", savedCredit);
 
-            adminService.saveStatementStatus(statement, CC_APPROVED);
+            adminService.saveStatementStatus(statement, CC_APPROVED, AUTOMATIC);
 
             clientService.finishRegistration(client, finishRegistration);
 

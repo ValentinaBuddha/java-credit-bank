@@ -23,6 +23,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
+import static ru.neoflex.deal.enums.ChangeType.MANUAL;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,22 +45,24 @@ class AdminServiceTest {
 
     @Test
     void saveStatementStatusWithStatement() {
-        assertDoesNotThrow(() -> adminService.saveStatementStatus(statement, PREAPPROVAL));
+        assertDoesNotThrow(() -> adminService.saveStatementStatus(statement, PREAPPROVAL, AUTOMATIC));
 
         assertEquals(PREAPPROVAL, statement.getStatus());
         assertEquals(1, statement.getStatusHistory().size());
         assertEquals(PREAPPROVAL, statement.getStatusHistory().get(0).getStatus());
+        assertEquals(AUTOMATIC, statement.getStatusHistory().get(0).getChangeType());
     }
 
     @Test
     void saveStatementStatusWithStatementId_whenStatementFound_thenStatusSaved() {
         when(statementRepository.findById(any())).thenReturn(Optional.ofNullable(statement));
 
-        assertDoesNotThrow(() -> adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL));
+        assertDoesNotThrow(() -> adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL, MANUAL));
 
         assertEquals(PREAPPROVAL, Objects.requireNonNull(statement).getStatus());
         assertEquals(1, statement.getStatusHistory().size());
         assertEquals(PREAPPROVAL, statement.getStatusHistory().get(0).getStatus());
+        assertEquals(MANUAL, statement.getStatusHistory().get(0).getChangeType());
         verify(statementRepository, times(1)).findById(any());
     }
 
@@ -67,7 +71,7 @@ class AdminServiceTest {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
         final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
-                adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL));
+                adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL, MANUAL));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
                 exception.getMessage());
@@ -90,7 +94,7 @@ class AdminServiceTest {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
         final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
-                adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL));
+                adminService.findStatementById(String.valueOf(id)));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
                 exception.getMessage());

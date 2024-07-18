@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.dto.StatementDto;
+import ru.neoflex.deal.enums.ChangeType;
 import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.mapper.StatementMapper;
 import ru.neoflex.deal.model.Statement;
@@ -17,8 +18,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
-
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
@@ -28,13 +27,13 @@ public class AdminService {
     private final StatementRepository statementRepository;
     private final StatementMapper statementMapper;
 
-    public void saveStatementStatus(Statement statement, Status status) {
+    public void saveStatementStatus(Statement statement, Status status, ChangeType changeType) {
         log.info("Save new statement status = {}", status);
 
         statement.setStatus(status);
         log.info("Status saved in statement");
 
-        var statementStatus = new StatementStatus(status, LocalDateTime.now(), AUTOMATIC);
+        var statementStatus = new StatementStatus(status, LocalDateTime.now(), changeType);
         List<StatementStatus> history = statement.getStatusHistory();
         history.add(statementStatus);
         log.info("Status saved in history: {}", history.stream()
@@ -42,9 +41,9 @@ public class AdminService {
                 .collect(Collectors.joining(", ")));
     }
 
-    public void saveStatementStatus(String statementId, Status status) {
+    public void saveStatementStatus(String statementId, Status status, ChangeType changeType) {
         var statement = findStatementById(UUID.fromString(statementId));
-        saveStatementStatus(statement, status);
+        saveStatementStatus(statement, status, changeType);
     }
 
     @Transactional(readOnly = true)

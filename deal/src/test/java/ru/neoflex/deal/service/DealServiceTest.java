@@ -81,7 +81,7 @@ class DealServiceTest {
         verify(clientService, times(1)).saveClient(any());
         verify(statementRepository, times(1)).save(any());
         verify(calculatorFeignClient, times(1)).calculateLoanOffers(any());
-        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any());
+        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any(), any());
         for (int i = 0; i < offers.size(); i++) {
             assertEquals(statement.getId(), actualOffers.get(i).getStatementId());
         }
@@ -94,10 +94,10 @@ class DealServiceTest {
 
         assertDoesNotThrow(() -> dealService.selectLoanOffers(new LoanOfferDto()));
 
-        verify(statementRepository, times(2)).findById(any());
+        verify(statementRepository, times(1)).findById(any());
         verify(offerMapper, times(1)).toAppliedOffer(any());
         verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
-        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any());
+        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any(), any());
     }
 
     @Test
@@ -127,7 +127,7 @@ class DealServiceTest {
         verify(calculatorFeignClient, times(1)).calculateCredit(any());
         verify(creditMapper, times(1)).toCredit(any());
         verify(creditRepository, times(1)).save(any());
-        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any());
+        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any(), any());
         verify(clientService, times(1)).finishRegistration(any(), any());
         verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
     }
@@ -155,7 +155,7 @@ class DealServiceTest {
         verify(statementRepository, times(1)).findById(any());
         verify(scoringDataMapper, times(1)).toScoringDataDto(any(), any(), any(), any());
         verify(calculatorFeignClient, times(1)).calculateCredit(any());
-        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any());
+        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any(), any());
         verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
     }
 }

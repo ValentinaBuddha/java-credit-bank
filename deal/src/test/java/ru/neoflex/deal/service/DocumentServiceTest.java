@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,7 +52,7 @@ class DocumentServiceTest {
         assertDoesNotThrow(() -> documentService.sendDocuments(id));
 
         verify(statementRepository, times(1)).findById(any());
-        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any());
+        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any(), any());
         verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
     }
 
@@ -102,7 +101,7 @@ class DocumentServiceTest {
 
         verify(statementRepository, times(1)).findById(any());
         verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
-        verify(adminService, times(2)).saveStatementStatus(anyString(), any());
+        verify(adminService, times(2)).saveStatementStatus((Statement) any(), any(), any());
         assertNotNull(statement.getSignDate());
         assertEquals(ISSUED, statement.getCredit().getCreditStatus());
     }

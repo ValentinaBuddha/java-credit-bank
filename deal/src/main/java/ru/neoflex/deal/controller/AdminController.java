@@ -14,6 +14,8 @@ import ru.neoflex.deal.dto.StatementDto;
 import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.service.AdminService;
 
+import static ru.neoflex.deal.enums.ChangeType.MANUAL;
+
 @Tag(name = "Сделка: админ", description = "API по сохранению нового статуса заявки и получению заявки по идентификтору.")
 @RequiredArgsConstructor
 @RestController
@@ -26,7 +28,7 @@ public class AdminController {
     @PutMapping("/status")
     public void findStatementById(@PathVariable @Parameter(required = true) String statementId,
                                   @RequestParam @Parameter(required = true) Status status) {
-        adminService.saveStatementStatus(statementId, status);
+        adminService.saveStatementStatus(statementId, status, MANUAL);
     }
 
     @Operation(summary = "Получение заявки по идентификатору.")
