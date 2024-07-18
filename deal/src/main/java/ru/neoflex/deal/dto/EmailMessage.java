@@ -6,6 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.neoflex.deal.enums.Theme;
 
+/**
+ * Kafka message.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Builder
 @Data
 @AllArgsConstructor

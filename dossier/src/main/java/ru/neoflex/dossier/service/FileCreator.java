@@ -13,6 +13,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Service for creating credit documents.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service

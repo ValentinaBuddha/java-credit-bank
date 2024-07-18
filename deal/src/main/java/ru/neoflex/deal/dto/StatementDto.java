@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * Full information about loan statement.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Schema(description = "Заявка на кредит")
 @Builder
 @Data

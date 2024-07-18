@@ -23,6 +23,11 @@ import static ru.neoflex.deal.enums.Status.PREPARE_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.SEND_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.SEND_SES;
 
+/**
+ * Service for signing documents.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Transactional
 @Slf4j
 @RequiredArgsConstructor

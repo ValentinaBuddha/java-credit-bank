@@ -75,7 +75,7 @@ public class DealService {
         return offers;
     }
 
-    public void selectLoanOffers(LoanOfferDto loanOffer) {
+    public void selectLoanOffer(LoanOfferDto loanOffer) {
         log.info("Select one loan offer in dealService = {}", loanOffer);
 
         var id = loanOffer.getStatementId();

@@ -16,6 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+/**
+ * Service for sending emails.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service

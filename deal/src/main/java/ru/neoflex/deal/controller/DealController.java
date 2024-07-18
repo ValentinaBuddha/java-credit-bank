@@ -46,8 +46,8 @@ public class DealController {
      */
     @Operation(summary = "Выбор одного из предложений по кредиту.")
     @PostMapping("/offer/select")
-    public void selectLoanOffers(@Parameter(required = true) @Valid @RequestBody LoanOfferDto loanOffer) {
-        dealService.selectLoanOffers(loanOffer);
+    public void selectLoanOffer(@Parameter(required = true) @Valid @RequestBody LoanOfferDto loanOffer) {
+        dealService.selectLoanOffer(loanOffer);
     }
 
     /**
@@ -55,7 +55,7 @@ public class DealController {
      */
     @Operation(summary = "Завершение регистрации и полный расчёт всех параметров по кредиту.")
     @PostMapping("/calculate/{statementId}")
-    public void calculateCredit(@PathVariable @Parameter(required = true) String statementId,
+    public void finishRegistration(@PathVariable @Parameter(required = true) String statementId,
                                 @Parameter(required = true) @Valid @RequestBody
                                 FinishRegistrationRequestDto finishRegistration) {
         dealService.finishRegistration(statementId, finishRegistration);

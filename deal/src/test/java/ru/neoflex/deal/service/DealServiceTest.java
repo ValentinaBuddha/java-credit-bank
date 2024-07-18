@@ -88,11 +88,11 @@ class DealServiceTest {
     }
 
     @Test
-    void selectLoanOffers_whenStatementFound_thenStatusAndOfferSaved() {
+    void selectLoanOffer_whenStatementFound_thenStatusAndOfferSaved() {
         when(statementRepository.findById(any())).thenReturn(Optional.of(statement));
         when(offerMapper.toAppliedOffer(any())).thenReturn(new AppliedOffer());
 
-        assertDoesNotThrow(() -> dealService.selectLoanOffers(new LoanOfferDto()));
+        assertDoesNotThrow(() -> dealService.selectLoanOffer(new LoanOfferDto()));
 
         verify(statementRepository, times(1)).findById(any());
         verify(offerMapper, times(1)).toAppliedOffer(any());
@@ -101,12 +101,12 @@ class DealServiceTest {
     }
 
     @Test
-    void selectLoanOffers_whenStatementNotFound_thenThrowsException() {
+    void selectLoanOffer_whenStatementNotFound_thenThrowsException() {
         final var loanOfferDto = LoanOfferDto.builder().statementId(id).build();
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
         final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
-                dealService.selectLoanOffers(loanOfferDto));
+                dealService.selectLoanOffer(loanOfferDto));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
                 exception.getMessage());

@@ -18,6 +18,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service for working with statement.
+ *
+ * @author Valentina Vakhlamova
+ */
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
