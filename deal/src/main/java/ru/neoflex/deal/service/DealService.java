@@ -84,7 +84,7 @@ public class DealService {
 
         var appliedOffer = offerMapper.toAppliedOffer(loanOffer);
         statement.setAppliedOffer(appliedOffer);
-        log.info("Statement with selected offer saved = {}", findStatementById(id));
+        log.info("Statement with selected offer saved = {}", statement);
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())

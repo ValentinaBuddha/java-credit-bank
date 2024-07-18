@@ -32,12 +32,12 @@ public class AdminService {
         log.info("Save new statement status = {}", status);
 
         statement.setStatus(status);
-        log.info("Status in statement saved = {}", statement.getStatus());
+        log.info("Status saved in statement");
 
         var statementStatus = new StatementStatus(status, LocalDateTime.now(), AUTOMATIC);
         List<StatementStatus> history = statement.getStatusHistory();
         history.add(statementStatus);
-        log.info("Status saved in history: {}", statement.getStatusHistory().stream()
+        log.info("Status saved in history: {}", history.stream()
                 .map(StatementStatus::toString)
                 .collect(Collectors.joining(", ")));
     }

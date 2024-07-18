@@ -54,7 +54,7 @@ public class DocumentService {
 
         int sesCode = SesCodeGenerator.generateSesCode();
         statement.setSesCode(String.valueOf(sesCode));
-        log.info("SesCode generated = {} and saved to statement = {}", sesCode, statement);
+        log.info("SesCode generated = {} and saved to statement", sesCode);
 
         var emailMessage = EmailMessage.builder()
                 .address(statement.getClient().getEmail())
