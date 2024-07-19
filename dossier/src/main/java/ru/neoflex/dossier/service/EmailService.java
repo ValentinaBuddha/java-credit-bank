@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ru.neoflex.dossier.exception.EmailServiceException;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
@@ -46,7 +47,8 @@ public class EmailService {
             log.info("Message sent");
 
         } catch (Exception exception) {
-            log.info("Sending email exception: " + exception.getMessage());
+            log.error("Sending email exception: " + exception.getMessage());
+            throw new EmailServiceException(exception.getMessage());
         }
     }
 
@@ -74,7 +76,8 @@ public class EmailService {
             log.info("Message sent");
 
         } catch (Exception exception) {
-            log.info("Sending email exception: " + exception.getMessage());
+            log.error("Sending email exception: " + exception.getMessage());
+            throw new EmailServiceException(exception.getMessage());
         }
     }
 }
