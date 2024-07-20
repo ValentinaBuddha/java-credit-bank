@@ -9,12 +9,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ru.neoflex.dossier.dto.CreditDto;
 import ru.neoflex.dossier.exception.EmailServiceException;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -28,6 +27,7 @@ import java.util.Objects;
 public class EmailService {
 
     private final JavaMailSender emailSender;
+    private final FileCreator fileCreator;
     @Value("${spring.mail.username}")
     private String fromEmail;
 
@@ -53,7 +53,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendMessageWithAttachment(String to, String subject, String text) {
+    public void sendMessageWithAttachment(String to, String subject, String text, CreditDto creditDto) {
         log.info("Send email with attachment");
 
         try {
@@ -65,10 +65,9 @@ public class EmailService {
             helper.setText(text);
             log.info("Message created");
 
-            String userHome = System.getProperty("user.home");
-            Path filePath = Paths.get(userHome, "IdeaProjects", "java-credit-bank", "dossier", "loan_documents.txt");
-            File file = new File(filePath.toString());
+            File file = new File(fileCreator.createTxtFile(creditDto).toString());
             FileSystemResource documents = new FileSystemResource(file);
+
             helper.addAttachment(Objects.requireNonNull(documents.getFilename()), documents);
             log.info("Attachment added");
 

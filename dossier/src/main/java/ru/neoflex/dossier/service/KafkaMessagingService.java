@@ -18,7 +18,6 @@ public class KafkaMessagingService {
 
     private final EmailService emailService;
     private final DealFeignClient dealFeignClient;
-    private final FileCreator fileCreator;
     private static final String MESSAGE_CONSUMED = "Message consumed {}";
 
     @Transactional
@@ -54,10 +53,9 @@ public class KafkaMessagingService {
 
         var statementDto = dealFeignClient.findStatementById(emailMessage.getStatementId());
         var creditDto = statementDto.getCredit();
-        fileCreator.createTxtFile(creditDto);
 
         String text = "Документы по кредиту.\n[Запрос на согласие с условиями.](ссылка)";
-        emailService.sendMessageWithAttachment(emailMessage.getAddress(), "Документы по кредиту", text);
+        emailService.sendMessageWithAttachment(emailMessage.getAddress(), "Документы по кредиту", text, creditDto);
     }
 
     @Transactional
