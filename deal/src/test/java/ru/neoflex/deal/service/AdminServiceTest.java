@@ -37,8 +37,8 @@ class AdminServiceTest {
     @InjectMocks
     private AdminService adminService;
 
-    private final UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
-    private final Statement statement = Statement.builder()
+    private UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
+    private Statement statement = Statement.builder()
             .id(id)
             .statusHistory(new ArrayList<>())
             .build();
@@ -70,7 +70,7 @@ class AdminServiceTest {
     void saveStatementStatusWithStatementId_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL, MANUAL));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
@@ -93,7 +93,7 @@ class AdminServiceTest {
     void findStatementById_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 adminService.findStatementById(String.valueOf(id)));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",

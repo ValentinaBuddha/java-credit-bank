@@ -39,13 +39,13 @@ class RateCalculatorServiceTest {
     @InjectMocks
     private RateCalculatorService rateCalculator;
 
-    private final Double creditRate = 19.00;
-    private final BigDecimal creditRateBigDec = BigDecimal.valueOf(creditRate);
-    private final EmploymentDto employment = EmploymentDto.builder()
+    private Double creditRate = 19.00;
+    private BigDecimal creditRateBigDec = BigDecimal.valueOf(creditRate);
+    private EmploymentDto employment = EmploymentDto.builder()
             .employmentStatus(EMPLOYED)
             .position(WORKER)
             .build();
-    private final ScoringDataDto scoringData = ScoringDataDto.builder()
+    private ScoringDataDto scoringData = ScoringDataDto.builder()
             .gender(FEMALE)
             .birthdate(LocalDate.now().minusYears(30))
             .maritalStatus(WIDOW_WIDOWER)
@@ -56,7 +56,7 @@ class RateCalculatorServiceTest {
     void calculateRate_whenNoInsuranceAndNotSalaryClient_thenRate19() {
         when(rateConfiguration.getRate()).thenReturn(creditRate);
 
-        final BigDecimal rate = rateCalculator.calculateRate(false, false);
+        var rate = rateCalculator.calculateRate(false, false);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -65,7 +65,7 @@ class RateCalculatorServiceTest {
     void calculateRate_whenInsuranceAndNotSalaryClient_thenRate16() {
         when(rateConfiguration.getRate()).thenReturn(creditRate);
 
-        final BigDecimal rate = rateCalculator.calculateRate(true, false);
+        var rate = rateCalculator.calculateRate(true, false);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -74,7 +74,7 @@ class RateCalculatorServiceTest {
     void calculateRate_whenNoInsuranceAndSalaryClient_thenRate18() {
         when(rateConfiguration.getRate()).thenReturn(creditRate);
 
-        final BigDecimal rate = rateCalculator.calculateRate(false, true);
+        var rate = rateCalculator.calculateRate(false, true);
 
         assertEquals(BigDecimal.valueOf(18).setScale(2), rate);
     }
@@ -83,14 +83,14 @@ class RateCalculatorServiceTest {
     void calculateRate_whenInsuranceAndSalaryClient_thenRate18() {
         when(rateConfiguration.getRate()).thenReturn(creditRate);
 
-        final BigDecimal rate = rateCalculator.calculateRate(true, true);
+        var rate = rateCalculator.calculateRate(true, true);
 
         assertEquals(BigDecimal.valueOf(15).setScale(2), rate);
     }
 
     @Test
     void calculateFinalRate_whenEmployedStatus_thenRateNotChange() {
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -99,7 +99,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenSelfEmployedStatus_thenRateIncreasedBy1() {
         employment.setEmploymentStatus(SELF_EMPLOYED);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(20).setScale(2), rate);
     }
@@ -108,7 +108,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenBusinessOwnerStatus_thenRateIncreasedBy2() {
         employment.setEmploymentStatus(BUSINESS_OWNER);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(21).setScale(2), rate);
     }
@@ -117,7 +117,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenWorkerPosition_thenRateNotChange() {
         employment.setPosition(WORKER);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -126,7 +126,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenPositionMiddleManager_thenRateDecreasedBy2() {
         employment.setPosition(MID_MANAGER);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(17).setScale(2), rate);
     }
@@ -135,7 +135,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenPositionTopManager_thenRateDecreasedBy3() {
         employment.setPosition(TOP_MANAGER);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -144,7 +144,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenMarriedStatus_thenRateDecreasedBy3() {
         scoringData.setMaritalStatus(MARRIED);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -153,7 +153,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenSingleStatus_thenRateNotChange() {
         scoringData.setMaritalStatus(SINGLE);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -162,14 +162,14 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenDivorcedStatus_thenRateIncreasedBy1() {
         scoringData.setMaritalStatus(DIVORCED);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(20).setScale(2), rate);
     }
 
     @Test
     void calculateFinalRate_whenWidowedStatus_thenRateNotChange() {
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -178,7 +178,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenGenderNonBinary_thenRateIncreasedBy7() {
         scoringData.setGender(NON_BINARY);
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(26).setScale(2), rate);
     }
@@ -187,7 +187,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenGenderFemaleAndAge32_thenRateDecreasedBy3() {
         scoringData.setBirthdate(LocalDate.now().minusYears(32));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -196,7 +196,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenGenderFemaleAndAge32PlusDay_thenRateDecreasedBy3() {
         scoringData.setBirthdate(LocalDate.now().minusYears(32).minusDays(1));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -205,7 +205,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_whenGenderFemaleAndAge61_thenRateNotChange() {
         scoringData.setBirthdate(LocalDate.now().minusYears(61));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -215,7 +215,7 @@ class RateCalculatorServiceTest {
         scoringData.setGender(MALE);
         scoringData.setBirthdate(LocalDate.now().minusYears(30).plusDays(1));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -225,7 +225,7 @@ class RateCalculatorServiceTest {
         scoringData.setGender(MALE);
         scoringData.setBirthdate(LocalDate.now().minusYears(30));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -235,7 +235,7 @@ class RateCalculatorServiceTest {
         scoringData.setGender(MALE);
         scoringData.setBirthdate(LocalDate.now().minusYears(30).minusDays(1));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(16).setScale(2), rate);
     }
@@ -245,7 +245,7 @@ class RateCalculatorServiceTest {
         scoringData.setGender(MALE);
         scoringData.setBirthdate(LocalDate.now().minusYears(56));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(19).setScale(2), rate);
     }
@@ -259,7 +259,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_forFemaleWithDifferentAges(int age, int expectedRate) {
         scoringData.setBirthdate(LocalDate.now().minusYears(age + 1).plusDays(1));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(expectedRate).setScale(2), rate);
     }
@@ -272,7 +272,7 @@ class RateCalculatorServiceTest {
     void calculateFinalRate_forMaleWithDifferentAges_thenRateDecreasedBy3(int age, int expectedRate) {
         scoringData.setBirthdate(LocalDate.now().minusYears(age + 1).plusDays(1));
 
-        final BigDecimal rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
+        var rate = rateCalculator.calculateFinalRate(scoringData, creditRateBigDec);
 
         assertEquals(BigDecimal.valueOf(expectedRate).setScale(2), rate);
     }

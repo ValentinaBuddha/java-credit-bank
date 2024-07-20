@@ -61,22 +61,22 @@ class DealServiceTest {
     @InjectMocks
     private DealService dealService;
 
-    private final UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
-    private final Client client = Client.builder()
+    private UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
+    private Client client = Client.builder()
             .passport(new Passport(new PassportData()))
             .email("ivan@gmail.com")
             .build();
-    private final Statement statement = Statement.builder().id(id).client(client).build();
-    private final FinishRegistrationRequestDto finishRegistration = new FinishRegistrationRequestDto();
+    private Statement statement = Statement.builder().id(id).client(client).build();
+    private FinishRegistrationRequestDto finishRegistration = new FinishRegistrationRequestDto();
 
     @Test
     void calculateLoanOffers() {
-        final List<LoanOfferDto> offers = List.of(new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto());
+        List<LoanOfferDto> offers = List.of(new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto());
         when(clientService.saveClient(any())).thenReturn(client);
         when(statementRepository.save(any())).thenReturn(statement);
         when(calculatorFeignClient.calculateLoanOffers(any())).thenReturn(offers);
 
-        final List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(new LoanStatementRequestDto());
+        List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(new LoanStatementRequestDto());
 
         verify(clientService, times(1)).saveClient(any());
         verify(statementRepository, times(1)).save(any());
@@ -102,10 +102,10 @@ class DealServiceTest {
 
     @Test
     void selectLoanOffer_whenStatementNotFound_thenThrowsException() {
-        final var loanOfferDto = LoanOfferDto.builder().statementId(id).build();
+        var loanOfferDto = LoanOfferDto.builder().statementId(id).build();
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 dealService.selectLoanOffer(loanOfferDto));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
@@ -136,7 +136,7 @@ class DealServiceTest {
     void finishRegistration_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 dealService.finishRegistration(String.valueOf(id), finishRegistration));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",

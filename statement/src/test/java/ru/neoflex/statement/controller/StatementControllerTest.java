@@ -34,7 +34,7 @@ class StatementControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    final LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
+    LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
             .amount(BigDecimal.valueOf(100000))
             .term(12)
             .firstName("Ivan")

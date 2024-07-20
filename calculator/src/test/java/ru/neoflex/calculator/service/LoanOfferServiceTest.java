@@ -28,21 +28,21 @@ class LoanOfferServiceTest {
     @InjectMocks
     private LoanOfferService loanOfferService;
 
-    private final BigDecimal amount = BigDecimal.valueOf(100000);
-    private final BigDecimal amountWihInsurance = BigDecimal.valueOf(105000);
-    private final int term = 12;
-    private final LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
+    private BigDecimal amount = BigDecimal.valueOf(100000);
+    private BigDecimal amountWihInsurance = BigDecimal.valueOf(105000);
+    private int term = 12;
+    private LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
             .amount(amount)
             .term(term)
             .build();
-    private final BigDecimal monthlyPayment1 = BigDecimal.valueOf(9215.66);
-    private final BigDecimal monthlyPayment2 = BigDecimal.valueOf(9526.74);
-    private final BigDecimal monthlyPayment3 = BigDecimal.valueOf(9168);
-    private final BigDecimal monthlyPayment4 = BigDecimal.valueOf(9477.12);
-    private final BigDecimal rate1 = BigDecimal.valueOf(19);
-    private final BigDecimal rate2 = BigDecimal.valueOf(16);
-    private final BigDecimal rate3 = BigDecimal.valueOf(18);
-    private final BigDecimal rate4 = BigDecimal.valueOf(15);
+    private BigDecimal monthlyPayment1 = BigDecimal.valueOf(9215.66);
+    private BigDecimal monthlyPayment2 = BigDecimal.valueOf(9526.74);
+    private BigDecimal monthlyPayment3 = BigDecimal.valueOf(9168);
+    private BigDecimal monthlyPayment4 = BigDecimal.valueOf(9477.12);
+    private BigDecimal rate1 = BigDecimal.valueOf(19);
+    private BigDecimal rate2 = BigDecimal.valueOf(16);
+    private BigDecimal rate3 = BigDecimal.valueOf(18);
+    private BigDecimal rate4 = BigDecimal.valueOf(15);
 
     @Test
     void calculateLoanOffers() {
@@ -59,7 +59,7 @@ class LoanOfferServiceTest {
         when(rateCalculator.calculateRate(false, true)).thenReturn(rate3);
         when(annuityCalculator.calculateMonthlyPayment(amount, term, rate3)).thenReturn(monthlyPayment3);
 
-        final List<LoanOfferDto> loanOffers = loanOfferService.calculateLoanOffers(loanStatement);
+        List<LoanOfferDto> loanOffers = loanOfferService.calculateLoanOffers(loanStatement);
 
         assertEquals(4, loanOffers.size());
         assertEquals(rate1, loanOffers.get(0).getRate());

@@ -16,16 +16,16 @@ import static ru.neoflex.calculator.enums.EmploymentStatus.UNEMPLOYED;
 
 class ScoringServiceTest {
 
-    private final ScoringService scoringService = new ScoringService();
-    private final LocalDate birthdateSixtyFiveYearsAge = LocalDate.now().minusYears(65);
-    private final LocalDate birthdateTwentyYearsAge = LocalDate.now().minusYears(20);
-    private final EmploymentDto employment = EmploymentDto.builder()
+    private ScoringService scoringService = new ScoringService();
+    private LocalDate birthdateSixtyFiveYearsAge = LocalDate.now().minusYears(65);
+    private LocalDate birthdateTwentyYearsAge = LocalDate.now().minusYears(20);
+    private EmploymentDto employment = EmploymentDto.builder()
             .employmentStatus(SELF_EMPLOYED)
             .salary(BigDecimal.valueOf(300000))
             .workExperienceTotal(19)
             .workExperienceCurrent(4)
             .build();
-    private final ScoringDataDto scoringData = ScoringDataDto.builder()
+    private ScoringDataDto scoringData = ScoringDataDto.builder()
             .amount(BigDecimal.valueOf(100000))
             .birthdate(LocalDate.of(1986, 11, 16))
             .employment(employment)
@@ -40,7 +40,7 @@ class ScoringServiceTest {
     void scoring_whenUnemployedStatus_thenThrowsException() {
         employment.setEmploymentStatus(UNEMPLOYED);
 
-        final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
+        ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
         assertEquals("Scoring result - rejection. Reasons: Working status unemployed", exception.getMessage());
     }
@@ -50,17 +50,17 @@ class ScoringServiceTest {
         BigDecimal smallSalary = BigDecimal.valueOf(3000);
         employment.setSalary(smallSalary);
 
-        final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
+        ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
         assertEquals("Scoring result - rejection. Reasons: The loan amount is more than 25 salaries", exception.getMessage());
     }
 
     @Test
     void scoring_whenAgeMoreSixtyFiveYearsAgo_thenThrowsException() {
-        LocalDate birthdateSixtyFiveYearsAgoYearsAgeMinusDay = birthdateSixtyFiveYearsAge.minusDays(1);
+        var birthdateSixtyFiveYearsAgoYearsAgeMinusDay = birthdateSixtyFiveYearsAge.minusDays(1);
         scoringData.setBirthdate(birthdateSixtyFiveYearsAgoYearsAgeMinusDay);
 
-        final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
+        ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
         assertEquals("Scoring result - rejection. Reasons: Age over 65 years", exception.getMessage());
     }
@@ -74,7 +74,7 @@ class ScoringServiceTest {
 
     @Test
     void scoring_whenAgeLessSixtyFive_thenNoExceptionThrown() {
-        LocalDate birthdateSixtyFiveYearsAgoYearsAgePlusDay = birthdateSixtyFiveYearsAge.plusDays(1);
+        var birthdateSixtyFiveYearsAgoYearsAgePlusDay = birthdateSixtyFiveYearsAge.plusDays(1);
         scoringData.setBirthdate(birthdateSixtyFiveYearsAgoYearsAgePlusDay);
 
         assertDoesNotThrow(() -> scoringService.scoring(scoringData));
@@ -82,10 +82,10 @@ class ScoringServiceTest {
 
     @Test
     void scoring_whenAgeLessTwenty_thenThrowsException() {
-        LocalDate birthdateTwentyYearsAgoYearsAgePlusDay = birthdateTwentyYearsAge.plusDays(1);
+        var birthdateTwentyYearsAgoYearsAgePlusDay = birthdateTwentyYearsAge.plusDays(1);
         scoringData.setBirthdate(birthdateTwentyYearsAgoYearsAgePlusDay);
 
-        final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
+        ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
         assertEquals("Scoring result - rejection. Reasons: Age less than 20 years", exception.getMessage());
     }
@@ -99,7 +99,7 @@ class ScoringServiceTest {
 
     @Test
     void scoring_whenAgeMoreTwenty_thenNoExceptionThrown() {
-        LocalDate birthdateTwentyYearsAgoMinusDay = birthdateTwentyYearsAge.minusDays(1);
+        var birthdateTwentyYearsAgoMinusDay = birthdateTwentyYearsAge.minusDays(1);
         scoringData.setBirthdate(birthdateTwentyYearsAgoMinusDay);
 
         assertDoesNotThrow(() -> scoringService.scoring(scoringData));
@@ -110,7 +110,7 @@ class ScoringServiceTest {
     void scoring_whenWorkExperienceTotalLessEighteen_thenThrowsException() {
         employment.setWorkExperienceTotal(17);
 
-        final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
+        ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
         assertEquals("Scoring result - rejection. Reasons: Total experience less than 18 months", exception.getMessage());
     }
@@ -126,7 +126,7 @@ class ScoringServiceTest {
     void scoring_whenWorkExperienceCurrentLessThree_thenThrowsException() {
         employment.setWorkExperienceCurrent(2);
 
-        final ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
+        ScoringException exception = assertThrows(ScoringException.class, () -> scoringService.scoring(scoringData));
 
         assertEquals("Scoring result - rejection. Reasons: Current experience less than 3 months", exception.getMessage());
     }

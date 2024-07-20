@@ -40,7 +40,7 @@ class DealControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    final EmploymentDto employmentDto = EmploymentDto.builder()
+    EmploymentDto employmentDto = EmploymentDto.builder()
             .employmentStatus(SELF_EMPLOYED)
             .employerInn("7707123456")
             .salary(BigDecimal.valueOf(70000))
@@ -48,7 +48,7 @@ class DealControllerTest {
             .workExperienceTotal(256)
             .workExperienceCurrent(12)
             .build();
-    final FinishRegistrationRequestDto finishRegistration = FinishRegistrationRequestDto.builder()
+    FinishRegistrationRequestDto finishRegistration = FinishRegistrationRequestDto.builder()
             .gender(MALE)
             .maritalStatus(MARRIED)
             .dependentAmount(0)

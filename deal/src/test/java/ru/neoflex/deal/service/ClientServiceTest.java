@@ -51,20 +51,20 @@ class ClientServiceTest {
     @InjectMocks
     private ClientService clientService;
 
-    private final String email = "ivan@gmail.com";
-    private final LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
+    private String email = "ivan@gmail.com";
+    private LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
             .email(email)
             .build();
-    private final PassportData passportData = new PassportData();
-    private final Passport passport = new Passport(passportData);
-    private final Client client = Client.builder()
+    private PassportData passportData = new PassportData();
+    private Passport passport = new Passport(passportData);
+    private Client client = Client.builder()
             .email(email)
             .passport(passport)
             .build();
-    private final EmploymentDto employmentDto = new EmploymentDto();
-    private final EmploymentData employmentData = new EmploymentData();
-    private final Employment employment = new Employment(employmentData);
-    private final FinishRegistrationRequestDto finishRegistration = FinishRegistrationRequestDto.builder()
+    private EmploymentDto employmentDto = new EmploymentDto();
+    private EmploymentData employmentData = new EmploymentData();
+    private Employment employment = new Employment(employmentData);
+    private FinishRegistrationRequestDto finishRegistration = FinishRegistrationRequestDto.builder()
             .employment(employmentDto)
             .build();
 
@@ -106,7 +106,7 @@ class ClientServiceTest {
         client.setFirstName("Masha");
         when(clientRepository.getClientByEmail(email)).thenReturn(client);
 
-        final EmailExistsException exception = assertThrows(EmailExistsException.class, () ->
+        EmailExistsException exception = assertThrows(EmailExistsException.class, () ->
                 clientService.saveClient(loanStatement));
 
         verify(clientRepository, times(1)).existsByEmail(email);

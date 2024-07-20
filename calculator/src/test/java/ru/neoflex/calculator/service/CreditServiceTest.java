@@ -38,12 +38,12 @@ class CreditServiceTest {
     @InjectMocks
     private CreditService creditService;
 
-    private final BigDecimal rate = BigDecimal.valueOf(19);
-    private final BigDecimal amount = BigDecimal.valueOf(100000);
-    private final int term = 1;
-    private final BigDecimal monthlyPayment = BigDecimal.valueOf(101583.33);
-    private final BigDecimal psk = BigDecimal.valueOf(1.56);
-    private final PaymentScheduleElementDto paymentScheduleElementDto = PaymentScheduleElementDto.builder()
+    private BigDecimal rate = BigDecimal.valueOf(19);
+    private BigDecimal amount = BigDecimal.valueOf(100000);
+    private int term = 1;
+    private BigDecimal monthlyPayment = BigDecimal.valueOf(101583.33);
+    private BigDecimal psk = BigDecimal.valueOf(1.56);
+    private PaymentScheduleElementDto paymentScheduleElementDto = PaymentScheduleElementDto.builder()
             .number(1)
             .date(LocalDate.now().plusMonths(1))
             .totalPayment(monthlyPayment)
@@ -51,12 +51,12 @@ class CreditServiceTest {
             .debtPayment(amount)
             .remainingDebt(BigDecimal.ZERO)
             .build();
-    private final List<PaymentScheduleElementDto> paymentSchedule = List.of(paymentScheduleElementDto);
-    private final EmploymentDto employment = EmploymentDto.builder()
+    private List<PaymentScheduleElementDto> paymentSchedule = List.of(paymentScheduleElementDto);
+    private EmploymentDto employment = EmploymentDto.builder()
             .employmentStatus(EMPLOYED)
             .position(WORKER)
             .build();
-    private final ScoringDataDto scoringData = ScoringDataDto.builder()
+    private ScoringDataDto scoringData = ScoringDataDto.builder()
             .amount(amount)
             .term(term)
             .gender(FEMALE)
@@ -66,7 +66,7 @@ class CreditServiceTest {
             .isInsuranceEnabled(false)
             .isSalaryClient(false)
             .build();
-    private final CreditDto credit = CreditDto.builder()
+    private CreditDto credit = CreditDto.builder()
             .amount(amount)
             .term(term)
             .monthlyPayment(monthlyPayment)
@@ -86,9 +86,9 @@ class CreditServiceTest {
         when(annuityCalculator.calculatePaymentSchedule(amount, term, rate, monthlyPayment)).thenReturn(paymentSchedule);
         when(annuityCalculator.calculatePsk(paymentSchedule, amount, term)).thenReturn(psk);
 
-        final CreditDto creditCurrent = creditService.calculateCredit(scoringData);
+        var creditDtoCurrent = creditService.calculateCredit(scoringData);
 
-        assertEquals(credit, creditCurrent);
+        assertEquals(credit, creditDtoCurrent);
         verify(scoringService, times(1)).scoring(scoringData);
         verify(rateCalculator, times(1)).calculateRate(false, false);
         verify(rateCalculator, times(1)).calculateFinalRate(scoringData, rate);

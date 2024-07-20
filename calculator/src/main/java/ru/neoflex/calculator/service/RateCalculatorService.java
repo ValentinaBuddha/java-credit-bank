@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.neoflex.calculator.config.RateConfiguration;
-import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
-import ru.neoflex.calculator.enums.Gender;
-import ru.neoflex.calculator.enums.MaritalStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,24 +55,24 @@ public class RateCalculatorService {
         log.info("Final calculating rate: scoringData = {}, rate = {}", scoringData, previousRate);
 
         var rate = previousRate;
-        EmploymentDto employment = scoringData.getEmployment();
-        Gender gender = scoringData.getGender();
-        LocalDate birthdate = scoringData.getBirthdate();
-        MaritalStatus maritalStatus = scoringData.getMaritalStatus();
+        var employmentDto = scoringData.getEmployment();
+        var gender = scoringData.getGender();
+        var birthdate = scoringData.getBirthdate();
+        var maritalStatus = scoringData.getMaritalStatus();
 
-        if (employment.getEmploymentStatus() == SELF_EMPLOYED) {
+        if (employmentDto.getEmploymentStatus() == SELF_EMPLOYED) {
             rate = rate.add(BigDecimal.ONE);
         }
 
-        if (employment.getEmploymentStatus() == BUSINESS_OWNER) {
+        if (employmentDto.getEmploymentStatus() == BUSINESS_OWNER) {
             rate = rate.add(TWO);
         }
 
-        if (employment.getPosition() == MID_MANAGER) {
+        if (employmentDto.getPosition() == MID_MANAGER) {
             rate = rate.subtract(TWO);
         }
 
-        if (employment.getPosition() == TOP_MANAGER) {
+        if (employmentDto.getPosition() == TOP_MANAGER) {
             rate = rate.subtract(THREE);
         }
 
@@ -104,8 +101,8 @@ public class RateCalculatorService {
     }
 
     private boolean isOlderAndYounger(int minAge, int maxAge, LocalDate birthdate) {
-        LocalDate maxBirthdate = LocalDate.now().minusYears(minAge);
-        LocalDate minBirthdate = LocalDate.now().minusYears(maxAge + 1L);
+        var maxBirthdate = LocalDate.now().minusYears(minAge);
+        var minBirthdate = LocalDate.now().minusYears(maxAge + 1L);
         return !birthdate.isAfter(maxBirthdate) && birthdate.isAfter(minBirthdate);
     }
 }

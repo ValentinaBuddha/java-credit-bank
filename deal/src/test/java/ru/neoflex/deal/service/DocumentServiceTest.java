@@ -38,9 +38,9 @@ class DocumentServiceTest {
     @InjectMocks
     private DocumentService documentService;
 
-    private final String id = "6dd2ff79-5597-4c58-9a88-55ab84c9378d";
-    private final Client client = Client.builder().email("ivan@gmail.com").build();
-    private final Statement statement = Statement.builder()
+    private String id = "6dd2ff79-5597-4c58-9a88-55ab84c9378d";
+    private Client client = Client.builder().email("ivan@gmail.com").build();
+    private Statement statement = Statement.builder()
             .id(UUID.fromString(id))
             .client(client)
             .build();
@@ -60,7 +60,7 @@ class DocumentServiceTest {
     void sendDocuments_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 documentService.sendDocuments(id));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
@@ -83,7 +83,7 @@ class DocumentServiceTest {
     void signDocuments_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 documentService.signDocuments(id));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
@@ -111,7 +111,7 @@ class DocumentServiceTest {
         statement.setSesCode("111111");
         when(statementRepository.findById(any())).thenReturn(Optional.of(statement));
 
-        final VerifySesCodeException exception = assertThrows(VerifySesCodeException.class, () ->
+        VerifySesCodeException exception = assertThrows(VerifySesCodeException.class, () ->
                 documentService.verifySesCode(id, "123456"));
 
         assertEquals("Ses code is invalid.", exception.getMessage());
@@ -122,7 +122,7 @@ class DocumentServiceTest {
     void verifySesCode_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 documentService.verifySesCode(id, "123456"));
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",

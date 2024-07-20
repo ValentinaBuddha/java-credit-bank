@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import ru.neoflex.dossier.dto.CreditDto;
 import ru.neoflex.dossier.exception.EmailServiceException;
 
-import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.Objects;
 
@@ -36,7 +35,7 @@ public class EmailService {
         log.info("Send simple email");
 
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
+            var message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(to);
             message.setSubject(subject);
@@ -57,16 +56,16 @@ public class EmailService {
         log.info("Send email with attachment");
 
         try {
-            MimeMessage message = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            var message = emailSender.createMimeMessage();
+            var helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);
             log.info("Message created");
 
-            File file = new File(fileCreator.createTxtFile(creditDto).toString());
-            FileSystemResource documents = new FileSystemResource(file);
+            var file = new File(fileCreator.createTxtFile(creditDto).toString());
+            var documents = new FileSystemResource(file);
 
             helper.addAttachment(Objects.requireNonNull(documents.getFilename()), documents);
             log.info("Attachment added");

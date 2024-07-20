@@ -24,12 +24,12 @@ class AnnuityCalculatorServiceTest {
     @InjectMocks
     private AnnuityCalculatorService annuityCalculator;
 
-    private final BigDecimal amount = BigDecimal.valueOf(100000);
-    private final BigDecimal amountWihInsurance = BigDecimal.valueOf(105000.00);
-    private final BigDecimal rate = BigDecimal.valueOf(19);
-    private final int term = 2;
-    private final BigDecimal monthlyPayment = BigDecimal.valueOf(51190.61);
-    private final PaymentScheduleElementDto paymentScheduleElementDto0 = PaymentScheduleElementDto.builder()
+    private BigDecimal amount = BigDecimal.valueOf(100000);
+    private BigDecimal amountWihInsurance = BigDecimal.valueOf(105000.00);
+    private BigDecimal rate = BigDecimal.valueOf(19);
+    private int term = 2;
+    private BigDecimal monthlyPayment = BigDecimal.valueOf(51190.61);
+    private PaymentScheduleElementDto paymentScheduleElementDto0 = PaymentScheduleElementDto.builder()
             .number(0)
             .date(LocalDate.now())
             .totalPayment(BigDecimal.ZERO)
@@ -37,7 +37,7 @@ class AnnuityCalculatorServiceTest {
             .debtPayment(BigDecimal.ZERO)
             .remainingDebt(amount)
             .build();
-    private final PaymentScheduleElementDto paymentScheduleElementDto1 = PaymentScheduleElementDto.builder()
+    private PaymentScheduleElementDto paymentScheduleElementDto1 = PaymentScheduleElementDto.builder()
             .number(1)
             .date(LocalDate.now().plusMonths(1))
             .totalPayment(monthlyPayment)
@@ -45,7 +45,7 @@ class AnnuityCalculatorServiceTest {
             .debtPayment(BigDecimal.valueOf(49607.28))
             .remainingDebt(BigDecimal.valueOf(50392.72))
             .build();
-    private final PaymentScheduleElementDto paymentScheduleElementDto2 = PaymentScheduleElementDto.builder()
+    private PaymentScheduleElementDto paymentScheduleElementDto2 = PaymentScheduleElementDto.builder()
             .number(2)
             .date(LocalDate.now().plusMonths(2))
             .totalPayment(monthlyPayment)
@@ -53,30 +53,30 @@ class AnnuityCalculatorServiceTest {
             .debtPayment(BigDecimal.valueOf(50392.72))
             .remainingDebt(BigDecimal.ZERO)
             .build();
-    private final List<PaymentScheduleElementDto> paymentSchedule =
+    private List<PaymentScheduleElementDto> paymentSchedule =
             List.of(paymentScheduleElementDto0, paymentScheduleElementDto1, paymentScheduleElementDto2);
 
 
     @Test
     void calculateTotalAmount() {
-        final Double insuranceRate = 5.00;
+        Double insuranceRate = 5.00;
         when(rateConfiguration.getInsuranceRate()).thenReturn(insuranceRate);
 
-        final BigDecimal currentAmount = annuityCalculator.calculateTotalAmount(amount, true);
+        var currentAmount = annuityCalculator.calculateTotalAmount(amount, true);
 
         assertEquals(amountWihInsurance.setScale(2), currentAmount);
     }
 
     @Test
     void calculateMonthlyPayment() {
-        final BigDecimal monthlyPaymentCurrent = annuityCalculator.calculateMonthlyPayment(amount, term, rate);
+        var monthlyPaymentCurrent = annuityCalculator.calculateMonthlyPayment(amount, term, rate);
 
         assertEquals(monthlyPayment, monthlyPaymentCurrent);
     }
 
     @Test
     void calculatePaymentSchedule() {
-        final List<PaymentScheduleElementDto> currentSchedule = annuityCalculator.calculatePaymentSchedule(
+        List<PaymentScheduleElementDto> currentSchedule = annuityCalculator.calculatePaymentSchedule(
                 amount, term, rate, monthlyPayment);
 
         assertEquals(paymentSchedule.size(), currentSchedule.size());
@@ -91,7 +91,7 @@ class AnnuityCalculatorServiceTest {
 
     @Test
     void calculatePsk() {
-        final BigDecimal currentPsk = annuityCalculator.calculatePsk(paymentSchedule, amount, term);
+        var currentPsk = annuityCalculator.calculatePsk(paymentSchedule, amount, term);
 
         assertEquals(BigDecimal.valueOf(14.287), currentPsk);
     }
