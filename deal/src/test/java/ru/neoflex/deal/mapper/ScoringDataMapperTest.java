@@ -26,9 +26,9 @@ class ScoringDataMapperTest {
 
     @Test
     void toScoringDataDto() {
-        final var employmentDto = new EmploymentDto(EMPLOYED, "1234567890", BigDecimal.valueOf(300000),
+        var employmentDto = new EmploymentDto(EMPLOYED, "1234567890", BigDecimal.valueOf(300000),
                 TOP_MANAGER, 256, 12);
-        final var finishRegistration = FinishRegistrationRequestDto.builder()
+        var finishRegistration = FinishRegistrationRequestDto.builder()
                 .gender(FEMALE)
                 .maritalStatus(MARRIED)
                 .dependentAmount(1)
@@ -37,21 +37,21 @@ class ScoringDataMapperTest {
                 .passportIssueDate(LocalDate.of(1990, 1, 1))
                 .employment(employmentDto)
                 .build();
-        final var offer = AppliedOffer.builder()
+        var offer = AppliedOffer.builder()
                 .totalAmount(BigDecimal.valueOf(100000))
                 .term(6)
                 .isInsuranceEnabled(true)
                 .isSalaryClient(true)
                 .build();
-        final var client = Client.builder()
+        var client = Client.builder()
                 .lastName("Ivanov")
                 .firstName("Ivan")
                 .middleName("Ivanovich")
                 .birthdate(LocalDate.of(1980, 1, 1))
                 .build();
-        final var passportData = new PassportData("1234", "123456");
+        var passportData = new PassportData("1234", "123456");
 
-        final var mappedScoringDataDto = scoringDataMapper.toScoringDataDto(finishRegistration, offer, client, passportData);
+        var mappedScoringDataDto = scoringDataMapper.toScoringDataDto(finishRegistration, offer, client, passportData);
 
         assertEquals(offer.getTotalAmount(), mappedScoringDataDto.getAmount());
         assertEquals(offer.getTerm(), mappedScoringDataDto.getTerm());

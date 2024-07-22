@@ -11,4 +11,6 @@ public interface CreditMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creditStatus", constant = "CALCULATED")
     Credit toCredit(CreditDto credit);
+
+    CreditDto toCreditDto(Credit credit);
 }

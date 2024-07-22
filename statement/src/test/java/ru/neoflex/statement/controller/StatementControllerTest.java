@@ -2,8 +2,6 @@ package ru.neoflex.statement.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,7 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.neoflex.statement.dto.LoanOfferDto;
 import ru.neoflex.statement.dto.LoanStatementRequestDto;
+import ru.neoflex.statement.dto.LoanStatementRequestWrapper;
 import ru.neoflex.statement.feign.DealFeignClient;
+import ru.neoflex.statement.service.PreskoringService;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -28,13 +28,16 @@ class StatementControllerTest {
     @MockBean
     private DealFeignClient dealFeignClient;
 
+    @MockBean
+    private PreskoringService prescoringService;
+
     @Autowired
     private ObjectMapper mapper;
 
     @Autowired
     private MockMvc mvc;
 
-    final LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
+    private LoanStatementRequestDto loanStatement = LoanStatementRequestDto.builder()
             .amount(BigDecimal.valueOf(100000))
             .term(12)
             .firstName("Ivan")
@@ -47,8 +50,8 @@ class StatementControllerTest {
             .build();
 
     @Test
-    void calculateLoanOffers_whenValidData_thenPreskoringOk() throws Exception {
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
+    void calculateLoanOffers_whenValidData_thenReturnOk() throws Exception {
+        when(dealFeignClient.calculateLoanOffers(new LoanStatementRequestWrapper())).thenReturn(List.of());
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
@@ -58,22 +61,19 @@ class StatementControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"SS", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"})
-    void calculateLoanOffers_whenFirstNameValid_thenPreskoringOk(String firstName) throws Exception {
-        loanStatement.setFirstName(firstName);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
+    @Test
+    void calculateLoanOffers_whenAmountNull_thenExceptionThrows() throws Exception {
+        loanStatement.setAmount(null);
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"S", "ШШ", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"})
-    void calculateLoanOffers_whenFirstNameNotValid_thenExceptionThrows(String firstName) throws Exception {
-        loanStatement.setFirstName(firstName);
+    @Test
+    void calculateLoanOffers_whenTermNull_thenExceptionThrows() throws Exception {
+        loanStatement.setTerm(null);
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
@@ -91,22 +91,9 @@ class StatementControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"SS", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"})
-    void calculateLoanOffers_whenLastNameValid_thenPreskoringOk(String lastName) throws Exception {
-        loanStatement.setLastName(lastName);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"S", "ШШ", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"})
-    void calculateLoanOffers_whenLastNameNotValid_thenExceptionThrows(String lastName) throws Exception {
-        loanStatement.setLastName(lastName);
+    @Test
+    void calculateLoanOffers_whenFirstNameBlank_thenExceptionThrows() throws Exception {
+        loanStatement.setFirstName("");
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
@@ -124,157 +111,14 @@ class StatementControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"SS", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"})
-    void calculateLoanOffers_whenMiddleNameValid_thenPreskoringOk(String middleName) throws Exception {
-        loanStatement.setMiddleName(middleName);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"S", "ШШ", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"})
-    void calculateLoanOffers_whenMiddleNameNotValid_thenExceptionThrows(String middleName) throws Exception {
-        loanStatement.setMiddleName(middleName);
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"0", "-100000", "29999"})
-    void calculateLoanOffers_whenAmountNotValid_thenExceptionThrows(String amount) throws Exception {
-        loanStatement.setAmount(new BigDecimal(amount));
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
-    void calculateLoanOffers_whenAmountValid_thenPreskoringOk() throws Exception {
-        loanStatement.setAmount(BigDecimal.valueOf(30000));
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void calculateLoanOffers_whenAmountNull_thenExceptionThrows() throws Exception {
-        loanStatement.setEmail(null);
+    void calculateLoanOffers_whenLastNameBlank_thenExceptionThrows() throws Exception {
+        loanStatement.setLastName("");
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {0, -12})
-    void calculateLoanOffers_whenTermNotValid_thenExceptionThrows(int term) throws Exception {
-        loanStatement.setTerm(term);
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {6, 7})
-    void calculateLoanOffers_whenTermValid_thenPreskoringOk(int term) throws Exception {
-        loanStatement.setTerm(term);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void calculateLoanOffers_whenTermNull_thenExceptionThrows() throws Exception {
-        loanStatement.setTerm(null);
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void calculateLoanOffers_whenAgeLess18_thenExceptionThrows() throws Exception {
-        loanStatement.setBirthdate(LocalDate.now().minusYears(18).plusDays(1));
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void calculateLoanOffers_whenAge18_thenPreskoringOk() throws Exception {
-        loanStatement.setBirthdate(LocalDate.now().minusYears(18));
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void calculateLoanOffers_whenAgeMore18_thenPreskoringOk() throws Exception {
-        loanStatement.setBirthdate(LocalDate.now().minusYears(18).minusDays(1));
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void calculateLoanOffers_whenBirthdateNull_thenExceptionThrows() throws Exception {
-        loanStatement.setBirthdate(null);
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"ivanya.ru", "шш@ya.ru", "ivan@шш.ru"})
-    void calculateLoanOffers_whenEmailNotValid_thenExceptionThrows(String email) throws Exception {
-        loanStatement.setEmail(email);
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"iv_an@ya.ru", "ivan@gmail.com", "ivan@neoflex.dev.com"})
-    void calculateLoanOffers_whenEmailValid_thenPreskoringOk(String email) throws Exception {
-        loanStatement.setEmail(email);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
     @Test
@@ -287,10 +131,9 @@ class StatementControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"12 34", "123 ", "12345"})
-    void calculateLoanOffers_whenPassportSeriesNotValid_thenExceptionThrows(String passportSeries) throws Exception {
-        loanStatement.setPassportSeries(passportSeries);
+    @Test
+    void calculateLoanOffers_whenEmailBlank_thenExceptionThrows() throws Exception {
+        loanStatement.setEmail("");
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
@@ -298,22 +141,9 @@ class StatementControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"1234", "0000"})
-    void calculateLoanOffers_whenPassportSeriesValid_thenPreskoringOk(String passportSeries) throws Exception {
-        loanStatement.setPassportSeries(passportSeries);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
-
-        mvc.perform(post("/statement")
-                        .content(mapper.writeValueAsString(loanStatement))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"12 3456", "12356 ", "1234567"})
-    void calculateLoanOffers_whenPassportNumberNotValid_thenExceptionThrows(String passportNumber) throws Exception {
-        loanStatement.setPassportNumber(passportNumber);
+    @Test
+    void calculateLoanOffers_whenBirthdateNull_thenExceptionThrows() throws Exception {
+        loanStatement.setBirthdate(null);
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
@@ -321,16 +151,44 @@ class StatementControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"123456", "000000"})
-    void calculateLoanOffers_whenPassportNumberValid_thenPreskoringOk(String passportNumber) throws Exception {
-        loanStatement.setPassportNumber(passportNumber);
-        when(dealFeignClient.calculateLoanOffers(loanStatement)).thenReturn(List.of());
+    @Test
+    void calculateLoanOffers_whenPassportSeriesNull_thenExceptionThrows() throws Exception {
+        loanStatement.setPassportSeries(null);
 
         mvc.perform(post("/statement")
                         .content(mapper.writeValueAsString(loanStatement))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void calculateLoanOffers_whenPassportSeriesBlank_thenExceptionThrows() throws Exception {
+        loanStatement.setPassportSeries("");
+
+        mvc.perform(post("/statement")
+                        .content(mapper.writeValueAsString(loanStatement))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void calculateLoanOffers_whenPassportNumberNull_thenExceptionThrows() throws Exception {
+        loanStatement.setPassportNumber(null);
+
+        mvc.perform(post("/statement")
+                        .content(mapper.writeValueAsString(loanStatement))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void calculateLoanOffers_whenPassportNumberBlank_thenExceptionThrows() throws Exception {
+        loanStatement.setPassportNumber("");
+
+        mvc.perform(post("/statement")
+                        .content(mapper.writeValueAsString(loanStatement))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

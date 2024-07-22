@@ -13,6 +13,7 @@ import ru.neoflex.deal.dto.EmploymentDto;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
+import ru.neoflex.deal.dto.LoanStatementRequestWrapper;
 import ru.neoflex.deal.service.DealService;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ import static ru.neoflex.deal.enums.EmploymentStatus.SELF_EMPLOYED;
 import static ru.neoflex.deal.enums.Gender.MALE;
 import static ru.neoflex.deal.enums.MaritalStatus.MARRIED;
 import static ru.neoflex.deal.enums.Position.TOP_MANAGER;
+import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 
 @WebMvcTest(controllers = DealController.class)
 class DealControllerTest {
@@ -40,7 +42,7 @@ class DealControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    final EmploymentDto employmentDto = EmploymentDto.builder()
+    EmploymentDto employmentDto = EmploymentDto.builder()
             .employmentStatus(SELF_EMPLOYED)
             .employerInn("7707123456")
             .salary(BigDecimal.valueOf(70000))
@@ -48,7 +50,7 @@ class DealControllerTest {
             .workExperienceTotal(256)
             .workExperienceCurrent(12)
             .build();
-    final FinishRegistrationRequestDto finishRegistration = FinishRegistrationRequestDto.builder()
+    FinishRegistrationRequestDto finishRegistration = FinishRegistrationRequestDto.builder()
             .gender(MALE)
             .maritalStatus(MARRIED)
             .dependentAmount(0)
@@ -60,10 +62,10 @@ class DealControllerTest {
 
     @Test
     void calculateLoanOffers() throws Exception {
-        when(dealService.calculateLoanOffers(new LoanStatementRequestDto())).thenReturn(List.of());
+        when(dealService.calculateLoanOffers(new LoanStatementRequestDto(), PREAPPROVAL)).thenReturn(List.of());
 
         mvc.perform(post("/deal/statement")
-                        .content(mapper.writeValueAsString(new LoanStatementRequestDto()))
+                        .content(mapper.writeValueAsString(new LoanStatementRequestWrapper()))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
