@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
-import ru.neoflex.deal.dto.LoanStatementRequestDto;
+import ru.neoflex.deal.dto.LoanStatementRequestWrapper;
 import ru.neoflex.deal.service.DealService;
 
 import javax.validation.Valid;
@@ -36,9 +36,10 @@ public class DealController {
      */
     @Operation(summary = "Расчёт возможных условий кредита.")
     @PostMapping("/statement")
-    public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @Valid @RequestBody
-                                                  LoanStatementRequestDto loanStatement) {
-        return dealService.calculateLoanOffers(loanStatement);
+    public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @RequestBody
+                                                  LoanStatementRequestWrapper loanStatementWrapper) {
+        return dealService.calculateLoanOffers(loanStatementWrapper.getLoanStatement(),
+                loanStatementWrapper.getStatus());
     }
 
     /**
@@ -46,7 +47,7 @@ public class DealController {
      */
     @Operation(summary = "Выбор одного из предложений по кредиту.")
     @PostMapping("/offer/select")
-    public void selectLoanOffer(@Parameter(required = true) @Valid @RequestBody LoanOfferDto loanOffer) {
+    public void selectLoanOffer(@Parameter(required = true) @RequestBody LoanOfferDto loanOffer) {
         dealService.selectLoanOffer(loanOffer);
     }
 

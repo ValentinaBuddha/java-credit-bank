@@ -9,6 +9,7 @@ import ru.neoflex.deal.dto.EmailMessage;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
+import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.exception.ScoringException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.CreditMapper;
@@ -29,6 +30,7 @@ import static ru.neoflex.deal.enums.ChangeType.AUTOMATIC;
 import static ru.neoflex.deal.enums.Status.APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_APPROVED;
 import static ru.neoflex.deal.enums.Status.CC_DENIED;
+import static ru.neoflex.deal.enums.Status.CLIENT_DENIED;
 import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 import static ru.neoflex.deal.enums.Theme.CREATE_DOCUMENTS;
 import static ru.neoflex.deal.enums.Theme.FINISH_REGISTRATION;
@@ -55,7 +57,7 @@ public class DealService {
     private final CreditMapper creditMapper;
     private final ScoringDataMapper scoringDataMapper;
 
-    public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement) {
+    public List<LoanOfferDto> calculateLoanOffers(LoanStatementRequestDto loanStatement, Status status) {
         log.info("Calculate loan offers in dealService: loanStatement = {}", loanStatement);
 
         var client = clientService.saveClient(loanStatement);
@@ -64,13 +66,28 @@ public class DealService {
         var savedStatement = statementRepository.save(statement);
         log.info("Statement saved = {}", savedStatement);
 
-        adminService.saveStatementStatus(savedStatement, PREAPPROVAL, AUTOMATIC);
+        adminService.saveStatementStatus(savedStatement, status, AUTOMATIC);
 
-        List<LoanOfferDto> offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
-        offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
-        log.info("Offers get from CalculatorMS: {}", offers.stream()
-                .map(LoanOfferDto::toString)
-                .collect(Collectors.joining(", ")));
+        List<LoanOfferDto> offers = new ArrayList<>();
+
+        if (status.equals(PREAPPROVAL)) {
+
+            offers = calculatorFeignClient.calculateLoanOffers(loanStatement);
+            offers.forEach(offer -> offer.setStatementId(savedStatement.getId()));
+            log.info("Offers get from CalculatorMS: {}", offers.stream()
+                    .map(LoanOfferDto::toString)
+                    .collect(Collectors.joining(", ")));
+        }
+
+        if (status.equals(CLIENT_DENIED)) {
+
+            var emailMessage = EmailMessage.builder()
+                    .address(statement.getClient().getEmail())
+                    .theme(STATEMENT_DENIED)
+                    .statementId(savedStatement.getId().toString())
+                    .build();
+            kafkaMessagingService.sendMessage("statement-denied", emailMessage);
+        }
 
         return offers;
     }

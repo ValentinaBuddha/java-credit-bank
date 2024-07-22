@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.neoflex.statement.config.DealFeignClientConfiguration;
 import ru.neoflex.statement.dto.LoanOfferDto;
-import ru.neoflex.statement.dto.LoanStatementRequestDto;
+import ru.neoflex.statement.dto.LoanStatementRequestWrapper;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public interface DealFeignClient {
 
     @PostMapping(value = "/statement")
-    List<LoanOfferDto> calculateLoanOffers(@RequestBody LoanStatementRequestDto loanStatement);
+    List<LoanOfferDto> calculateLoanOffers(@RequestBody LoanStatementRequestWrapper loanStatementWrapper);
 
     @PostMapping(value = "/offer/select")
     void selectLoanOffers(@RequestBody LoanOfferDto loanOffer);

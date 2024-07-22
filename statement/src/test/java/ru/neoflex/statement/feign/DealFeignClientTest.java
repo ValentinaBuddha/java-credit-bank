@@ -9,7 +9,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import ru.neoflex.statement.dto.LoanOfferDto;
-import ru.neoflex.statement.dto.LoanStatementRequestDto;
+import ru.neoflex.statement.dto.LoanStatementRequestWrapper;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -39,12 +39,12 @@ class DealFeignClientTest {
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        assertDoesNotThrow(() -> dealFeignClient.calculateLoanOffers(new LoanStatementRequestDto()));
+        assertDoesNotThrow(() -> dealFeignClient.calculateLoanOffers(new LoanStatementRequestWrapper()));
 
         verify(1, postRequestedFor(urlEqualTo("/deal/statement")));
         verify(postRequestedFor(urlEqualTo("/deal/statement"))
                 .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_JSON_VALUE))
-                .withRequestBody(equalToJson(mapper.writeValueAsString(new LoanStatementRequestDto()))));
+                .withRequestBody(equalToJson(mapper.writeValueAsString(new LoanStatementRequestWrapper()))));
 
     }
 

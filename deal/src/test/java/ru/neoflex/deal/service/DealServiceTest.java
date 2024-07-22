@@ -32,10 +32,13 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static ru.neoflex.deal.enums.Status.CLIENT_DENIED;
+import static ru.neoflex.deal.enums.Status.PREAPPROVAL;
 
 @ExtendWith(MockitoExtension.class)
 class DealServiceTest {
@@ -70,13 +73,13 @@ class DealServiceTest {
     private FinishRegistrationRequestDto finishRegistration = new FinishRegistrationRequestDto();
 
     @Test
-    void calculateLoanOffers() {
+    void calculateLoanOffers_whenStatusPreapproval() {
         List<LoanOfferDto> offers = List.of(new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto(), new LoanOfferDto());
         when(clientService.saveClient(any())).thenReturn(client);
         when(statementRepository.save(any())).thenReturn(statement);
         when(calculatorFeignClient.calculateLoanOffers(any())).thenReturn(offers);
 
-        List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(new LoanStatementRequestDto());
+        List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(new LoanStatementRequestDto(), PREAPPROVAL);
 
         verify(clientService, times(1)).saveClient(any());
         verify(statementRepository, times(1)).save(any());
@@ -85,6 +88,20 @@ class DealServiceTest {
         for (int i = 0; i < offers.size(); i++) {
             assertEquals(statement.getId(), actualOffers.get(i).getStatementId());
         }
+    }
+
+    @Test
+    void calculateLoanOffers_whenStatusClientDenied() {
+        when(clientService.saveClient(any())).thenReturn(client);
+        when(statementRepository.save(any())).thenReturn(statement);
+
+        List<LoanOfferDto> actualOffers = dealService.calculateLoanOffers(new LoanStatementRequestDto(), CLIENT_DENIED);
+
+        verify(kafkaMessagingService, times(1)).sendMessage(any(), any());
+        verify(clientService, times(1)).saveClient(any());
+        verify(statementRepository, times(1)).save(any());
+        verify(adminService, times(1)).saveStatementStatus((Statement) any(), any(), any());
+        assertTrue(actualOffers.isEmpty());
     }
 
     @Test

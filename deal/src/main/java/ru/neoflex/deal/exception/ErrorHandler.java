@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -30,8 +31,7 @@ public class ErrorHandler {
         log.info(e.getMessage());
         String message = e.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .findFirst()
-                .orElse("");
+                .collect(Collectors.joining(", "));
         return new ErrorResponse(HttpStatus.BAD_REQUEST, message);
     }
 

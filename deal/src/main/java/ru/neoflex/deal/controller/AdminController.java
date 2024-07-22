@@ -35,7 +35,7 @@ public class AdminController {
     @Operation(summary = "Сохранение нового статуса заявки.")
     @PutMapping("/status")
     public void saveStatementStatus(@PathVariable @Parameter(required = true) String statementId,
-                                  @RequestParam @Parameter(required = true) Status status) {
+                                    @RequestParam @Parameter(required = true) Status status) {
         adminService.saveStatementStatus(statementId, status, MANUAL);
     }
 

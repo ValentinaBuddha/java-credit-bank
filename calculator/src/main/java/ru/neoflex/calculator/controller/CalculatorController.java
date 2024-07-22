@@ -15,7 +15,6 @@ import ru.neoflex.calculator.dto.ScoringDataDto;
 import ru.neoflex.calculator.service.CreditService;
 import ru.neoflex.calculator.service.LoanOfferService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -38,8 +37,8 @@ public class CalculatorController {
      */
     @Operation(summary = "Расчёт возможных условий кредита и прескоринг данных.")
     @PostMapping("/offers")
-    public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @Valid @RequestBody
-                                                  LoanStatementRequestDto loanStatement) {
+    public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @RequestBody
+                                                      LoanStatementRequestDto loanStatement) {
         return loanOfferService.calculateLoanOffers(loanStatement);
     }
 
@@ -48,8 +47,7 @@ public class CalculatorController {
      */
     @Operation(summary = "Полный расчёт параметров кредита, скоринг и валидация данных.")
     @PostMapping("/calc")
-    public CreditDto calculateCredit(@Parameter(required = true) @Valid @RequestBody ScoringDataDto scoringData) {
-
+    public CreditDto calculateCredit(@Parameter(required = true) @RequestBody ScoringDataDto scoringData) {
         return creditService.calculateCredit(scoringData);
     }
 }
