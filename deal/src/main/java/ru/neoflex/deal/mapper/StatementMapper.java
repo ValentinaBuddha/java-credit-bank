@@ -1,11 +1,16 @@
 package ru.neoflex.deal.mapper;
 
 import org.mapstruct.Mapper;
-import ru.neoflex.deal.dto.StatementDto;
+import ru.neoflex.deal.dto.StatementDtoForDossier;
+import ru.neoflex.deal.dto.StatementDtoShort;
 import ru.neoflex.deal.model.Statement;
 
-@Mapper(componentModel = "spring", uses = {CreditMapper.class})
+import java.util.List;
+
+@Mapper(componentModel = "spring", uses = {CreditMapper.class, ClientMapper.class})
 public interface StatementMapper {
 
-    StatementDto toStatementDto(Statement statement);
+    StatementDtoForDossier toStatementCreditDto(Statement statement);
+
+    List<StatementDtoShort> toListStatementDtoShort(List<Statement> statements);
 }

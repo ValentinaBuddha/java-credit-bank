@@ -3,6 +3,7 @@ package ru.neoflex.deal.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import ru.neoflex.deal.dto.ClientDtoShort;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
 import ru.neoflex.deal.model.Client;
@@ -40,4 +41,6 @@ public interface ClientMapper {
     @Mapping(target = "passport", source = "passport")
     Client toFullClient(@MappingTarget Client client, FinishRegistrationRequestDto finishRegistration,
                       Employment employment, Passport passport);
+
+    ClientDtoShort toClientDtoShort(Client client);
 }

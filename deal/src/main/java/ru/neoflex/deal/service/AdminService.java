@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.neoflex.deal.dto.StatementDto;
+import ru.neoflex.deal.dto.StatementDtoForDossier;
+import ru.neoflex.deal.dto.StatementDtoShort;
 import ru.neoflex.deal.enums.ChangeType;
 import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.mapper.StatementMapper;
@@ -47,14 +48,23 @@ public class AdminService {
     }
 
     public void saveStatementStatus(String statementId, Status status, ChangeType changeType) {
+        log.info("Save new status by statement id = {}", statementId);
         var statement = findStatementById(UUID.fromString(statementId));
         saveStatementStatus(statement, status, changeType);
     }
 
     @Transactional(readOnly = true)
-    public StatementDto findStatementById(String statementId) {
+    public StatementDtoForDossier findStatementById(String statementId) {
+        log.info("Find statement by id = {}", statementId);
         var statement = findStatementById(UUID.fromString(statementId));
-        return statementMapper.toStatementDto(statement);
+        return statementMapper.toStatementCreditDto(statement);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StatementDtoShort> findAllStatements() {
+        log.info("Get all statements");
+        List<Statement> statements = statementRepository.findAll();
+        return statementMapper.toListStatementDtoShort(statements);
     }
 
     private Statement findStatementById(UUID statementId) {

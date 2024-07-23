@@ -5,7 +5,6 @@ import org.mapstruct.Mapping;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.ScoringDataDto;
 import ru.neoflex.deal.model.Client;
-import ru.neoflex.deal.model.Statement;
 import ru.neoflex.deal.model.jsonb.AppliedOffer;
 import ru.neoflex.deal.model.jsonb.PassportData;
 

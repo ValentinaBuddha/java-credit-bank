@@ -3,6 +3,7 @@ package ru.neoflex.deal.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.neoflex.deal.dto.CreditDto;
+import ru.neoflex.deal.dto.CreditDtoShort;
 import ru.neoflex.deal.model.Credit;
 
 @Mapper(componentModel = "spring", uses = {PaymentScheduleMapper.class})
@@ -13,4 +14,6 @@ public interface CreditMapper {
     Credit toCredit(CreditDto credit);
 
     CreditDto toCreditDto(Credit credit);
+
+    CreditDtoShort toCreditDtoShort(Credit credit);
 }
