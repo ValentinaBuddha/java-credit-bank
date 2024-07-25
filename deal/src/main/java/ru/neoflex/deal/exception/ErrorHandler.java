@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ScoringException.class, ValidationException.class, VerifySesCodeException.class})
+    @ExceptionHandler({ValidationException.class, VerifySesCodeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse validateException(RuntimeException e) {
         log.info(e.getMessage());
