@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import ru.neoflex.dossier.dto.CreditDto;
+import ru.neoflex.dossier.dto.CreditDtoFull;
 import ru.neoflex.dossier.exception.EmailServiceException;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendMessageWithAttachment(String to, String subject, String text, CreditDto creditDto) {
+    public void sendMessageWithAttachment(String to, String subject, String text, CreditDtoFull credit) {
         log.info("Send email with attachment");
 
         try {
@@ -64,7 +64,7 @@ public class EmailService {
             helper.setText(text);
             log.info("Message created");
 
-            var file = new File(fileCreator.createTxtFile(creditDto).toString());
+            var file = new File(fileCreator.createTxtFile(credit).toString());
             var documents = new FileSystemResource(file);
 
             helper.addAttachment(Objects.requireNonNull(documents.getFilename()), documents);

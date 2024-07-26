@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClientDtoShort {
 
-    @Schema(description = "Имя", example = "Ivan")
-    private String firstName;
-
     @Schema(description = "Фамилия", example = "Ivanov")
     private String lastName;
+
+    @Schema(description = "Имя", example = "Ivan")
+    private String firstName;
 
     @Schema(description = "Отчество", example = "Ivanovich")
     private String middleName;

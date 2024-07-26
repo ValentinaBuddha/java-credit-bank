@@ -11,6 +11,7 @@ import ru.neoflex.deal.model.jsonb.PaymentScheduleElement;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -69,6 +70,7 @@ class CreditMapperTest {
             false, paymentScheduleDtos);
     private Credit credit = new Credit(null, amount, term, monthlyPayment, rate, psk, paymentSchedule,
             false, false, CALCULATED);
+    private UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
 
     @Test
     void toCredit() {
@@ -91,20 +93,39 @@ class CreditMapperTest {
     }
 
     @Test
-    void toCreditDto() {
-        var mappedCreditDto = creditMapper.toCreditDto(credit);
+    void toCreditDtoFull() {
+        credit.setId(id);
+        credit.setCreditStatus(CALCULATED);
 
-        assertEquals(amount, mappedCreditDto.getAmount());
-        assertEquals(term, mappedCreditDto.getTerm());
-        assertEquals(monthlyPayment, mappedCreditDto.getMonthlyPayment());
-        assertEquals(rate, mappedCreditDto.getRate());
-        assertEquals(psk, mappedCreditDto.getPsk());
-        assertEquals(paymentScheduleDtos, mappedCreditDto.getPaymentSchedule());
-        assertEquals(false, mappedCreditDto.getIsInsuranceEnabled());
-        assertEquals(false, mappedCreditDto.getIsSalaryClient());
-        assertEquals(7, mappedCreditDto.getPaymentSchedule().size());
+        var mappedCreditDtoFull = creditMapper.toCreditDtoFull(credit);
+
+        assertEquals(id, mappedCreditDtoFull.getId());
+        assertEquals(amount, mappedCreditDtoFull.getAmount());
+        assertEquals(term, mappedCreditDtoFull.getTerm());
+        assertEquals(monthlyPayment, mappedCreditDtoFull.getMonthlyPayment());
+        assertEquals(rate, mappedCreditDtoFull.getRate());
+        assertEquals(psk, mappedCreditDtoFull.getPsk());
+        assertEquals(paymentScheduleDtos, mappedCreditDtoFull.getPaymentSchedule());
+        assertEquals(false, mappedCreditDtoFull.getIsInsuranceEnabled());
+        assertEquals(false, mappedCreditDtoFull.getIsSalaryClient());
+        assertEquals(CALCULATED, mappedCreditDtoFull.getCreditStatus());
+        assertEquals(7, mappedCreditDtoFull.getPaymentSchedule().size());
         for (int i = 0; i < 7; i++) {
-            assertEquals(paymentScheduleDtos.get(i), mappedCreditDto.getPaymentSchedule().get(i));
+            assertEquals(paymentScheduleDtos.get(i), mappedCreditDtoFull.getPaymentSchedule().get(i));
         }
+    }
+
+    @Test
+    void toCreditDtoShort() {
+        var mappedCreditDtoShort = creditMapper.toCreditDtoShort(credit);
+
+        assertEquals(amount, mappedCreditDtoShort.getAmount());
+        assertEquals(term, mappedCreditDtoShort.getTerm());
+        assertEquals(monthlyPayment, mappedCreditDtoShort.getMonthlyPayment());
+        assertEquals(rate, mappedCreditDtoShort.getRate());
+        assertEquals(psk, mappedCreditDtoShort.getPsk());
+        assertEquals(false, mappedCreditDtoShort.getIsInsuranceEnabled());
+        assertEquals(false, mappedCreditDtoShort.getIsSalaryClient());
+        assertEquals(CALCULATED, mappedCreditDtoShort.getCreditStatus());
     }
 }

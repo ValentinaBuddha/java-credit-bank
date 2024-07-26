@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.neoflex.deal.dto.StatementDtoForDossier;
+import ru.neoflex.deal.dto.StatementDtoFull;
 import ru.neoflex.deal.dto.StatementDtoShort;
 import ru.neoflex.deal.enums.Status;
 import ru.neoflex.deal.service.AdminService;
@@ -35,7 +35,7 @@ public class AdminController {
     /**
      * Change statement status.
      */
-    @Operation(summary = "Сохранение нового статуса заявки.")
+    @Operation(summary = "Сохранение статуса заявки.")
     @PutMapping("/{statementId}/status")
     public void saveStatementStatus(@PathVariable @Parameter(required = true) String statementId,
                                     @RequestParam @Parameter(required = true) Status status) {
@@ -47,7 +47,7 @@ public class AdminController {
      */
     @Operation(summary = "Получение заявки по идентификатору.")
     @GetMapping("/{statementId}")
-    public StatementDtoForDossier findStatementById(@PathVariable @Parameter(required = true) String statementId) {
+    public StatementDtoFull findStatementById(@PathVariable @Parameter(required = true) String statementId) {
         return adminService.findStatementById(statementId);
     }
 

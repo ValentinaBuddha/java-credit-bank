@@ -1,25 +1,28 @@
-package ru.neoflex.deal.dto;
+package ru.neoflex.dossier.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.neoflex.dossier.enums.CreditStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 /**
- * Final credit parameters.
+ * Full final credit parameters.
  *
  * @author Valentina Vakhlamova
  */
-@Schema(description = "Финальные параметры по кредиту")
-@Builder
+@Schema(description = "Полные финальные параметры по кредиту")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreditDto {
+public class CreditDtoFull {
+
+    @Schema(description = "Уникальный идентификатор кредита", example = "3422b448-2460-4fd2-9183-8000de6f8343")
+    private UUID id;
 
     @Schema(description = "Одобренная сумма кредита (с учетом страховки)", example = "100000")
     private BigDecimal amount;
@@ -44,4 +47,7 @@ public class CreditDto {
 
     @Schema(description = "График платежей")
     private List<PaymentScheduleElementDto> paymentSchedule;
+
+    @Schema(description = "Статус кредита", example = "CALCULATED")
+    private CreditStatus creditStatus;
 }

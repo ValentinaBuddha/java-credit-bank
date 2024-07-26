@@ -7,6 +7,8 @@ import ru.neoflex.deal.dto.StatementDtoShort;
 import ru.neoflex.deal.model.Client;
 import ru.neoflex.deal.model.Credit;
 import ru.neoflex.deal.model.Statement;
+import ru.neoflex.deal.model.jsonb.AppliedOffer;
+import ru.neoflex.deal.model.jsonb.StatementStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,13 +18,17 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static ru.neoflex.deal.enums.ChangeType.MANUAL;
 import static ru.neoflex.deal.enums.CreditStatus.CALCULATED;
 import static ru.neoflex.deal.enums.Status.DOCUMENT_CREATED;
 
 @SpringBootTest(classes = {ru.neoflex.deal.mapper.StatementMapperImpl.class,
         ru.neoflex.deal.mapper.CreditMapperImpl.class,
         ru.neoflex.deal.mapper.PaymentScheduleMapperImpl.class,
-        ru.neoflex.deal.mapper.ClientMapperImpl.class})
+        ru.neoflex.deal.mapper.ClientMapperImpl.class,
+        ru.neoflex.deal.mapper.EmploymentMapperImpl.class,
+        ru.neoflex.deal.mapper.PassportMapperImpl.class,
+        ru.neoflex.deal.mapper.OfferMapperImpl.class})
 class StatementMapperTest {
 
     @Autowired
@@ -38,7 +44,7 @@ class StatementMapperTest {
     private int term = 6;
     private BigDecimal monthlyPayment = BigDecimal.valueOf(17602.27);
     private BigDecimal psk = BigDecimal.valueOf(11.23);
-    private LocalDateTime creationDate = LocalDateTime.now();
+    private LocalDateTime dateTime = LocalDateTime.now();
     private Credit credit = Credit.builder()
             .amount(amount)
             .term(term)
@@ -54,25 +60,10 @@ class StatementMapperTest {
             .client(client)
             .credit(credit)
             .status(DOCUMENT_CREATED)
-            .creationDate(creationDate)
+            .creationDate(dateTime)
             .statusHistory(new ArrayList<>())
             .sesCode("123456")
             .build();
-
-    @Test
-    void toStatementCreditDto() {
-        var mappedStatementDtoForDossier = statementMapper.toStatementCreditDto(statement);
-
-        assertEquals(id, mappedStatementDtoForDossier.getId());
-        assertEquals(amount, mappedStatementDtoForDossier.getCredit().getAmount());
-        assertEquals(term, mappedStatementDtoForDossier.getCredit().getTerm());
-        assertEquals(monthlyPayment, mappedStatementDtoForDossier.getCredit().getMonthlyPayment());
-        assertEquals(rate, mappedStatementDtoForDossier.getCredit().getRate());
-        assertEquals(psk, mappedStatementDtoForDossier.getCredit().getPsk());
-        assertEquals(false, mappedStatementDtoForDossier.getCredit().getIsInsuranceEnabled());
-        assertEquals(false, mappedStatementDtoForDossier.getCredit().getIsSalaryClient());
-        assertEquals("123456", mappedStatementDtoForDossier.getSesCode());
-    }
 
     @Test
     void toListStatementDtoShort() {
@@ -94,7 +85,54 @@ class StatementMapperTest {
         assertEquals(false, mappedList.get(0).getCredit().getIsSalaryClient());
         assertEquals(CALCULATED, mappedList.get(0).getCredit().getCreditStatus());
         assertEquals(DOCUMENT_CREATED, mappedList.get(0).getStatus());
-        assertEquals(creationDate, mappedList.get(0).getCreationDate());
+        assertEquals(dateTime, mappedList.get(0).getCreationDate());
         assertNull(mappedList.get(0).getSignDate());
+    }
+
+    @Test
+    void toStatementDtoFull() {
+        var appliedOffer = new AppliedOffer(id, amount, amount, 6, monthlyPayment, rate, false, false);
+        statement.setAppliedOffer(appliedOffer);
+        statement.setSignDate(dateTime);
+        List<StatementStatus> history = new ArrayList<>(List.of(new StatementStatus(DOCUMENT_CREATED, dateTime, MANUAL)));
+        statement.setStatusHistory(history);
+
+        var mappedStatementDtoFull = statementMapper.toStatementDtoFull(statement);
+
+        assertEquals(id, mappedStatementDtoFull.getId());
+        assertEquals("Ivan", mappedStatementDtoFull.getClient().getFirstName());
+        assertEquals("Ivanov", mappedStatementDtoFull.getClient().getLastName());
+        assertEquals(amount, mappedStatementDtoFull.getCredit().getAmount());
+        assertEquals(term, mappedStatementDtoFull.getCredit().getTerm());
+        assertEquals(monthlyPayment, mappedStatementDtoFull.getCredit().getMonthlyPayment());
+        assertEquals(rate, mappedStatementDtoFull.getCredit().getRate());
+        assertEquals(psk, mappedStatementDtoFull.getCredit().getPsk());
+        assertEquals(false, mappedStatementDtoFull.getCredit().getIsInsuranceEnabled());
+        assertEquals(false, mappedStatementDtoFull.getCredit().getIsSalaryClient());
+        assertEquals(DOCUMENT_CREATED, mappedStatementDtoFull.getStatus());
+        assertEquals(dateTime, mappedStatementDtoFull.getCreationDate());
+        assertEquals(dateTime, mappedStatementDtoFull.getSignDate());
+        assertEquals("123456", mappedStatementDtoFull.getSesCode());
+        assertEquals(1, mappedStatementDtoFull.getStatusHistory().size());
+        assertEquals(DOCUMENT_CREATED, mappedStatementDtoFull.getStatusHistory().get(0).getStatus());
+        assertEquals(dateTime, mappedStatementDtoFull.getStatusHistory().get(0).getTime());
+        assertEquals(MANUAL, mappedStatementDtoFull.getStatusHistory().get(0).getChangeType());
+    }
+
+    @Test
+    void toStatementDtoFull_withAppliedOffer() {
+        var appliedOffer = new AppliedOffer(id, amount, amount, 6, monthlyPayment, rate, false, false);
+        statement.setAppliedOffer(appliedOffer);
+
+        var mappedStatementDtoFull = statementMapper.toStatementDtoFull(statement);
+
+        assertEquals(id, mappedStatementDtoFull.getAppliedOffer().getStatementId());
+        assertEquals(amount, mappedStatementDtoFull.getAppliedOffer().getRequestedAmount());
+        assertEquals(amount, mappedStatementDtoFull.getAppliedOffer().getTotalAmount());
+        assertEquals(monthlyPayment, mappedStatementDtoFull.getAppliedOffer().getMonthlyPayment());
+        assertEquals(rate, mappedStatementDtoFull.getAppliedOffer().getRate());
+        assertEquals(term, mappedStatementDtoFull.getAppliedOffer().getTerm());
+        assertEquals(false, mappedStatementDtoFull.getAppliedOffer().getIsInsuranceEnabled());
+        assertEquals(false, mappedStatementDtoFull.getAppliedOffer().getIsSalaryClient());
     }
 }

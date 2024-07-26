@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static ru.neoflex.dossier.util.DateConstant.DATE_PATTERN;
+
 /**
  * Information about monthly payment for payment schedule.
  *
@@ -20,7 +22,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PaymentScheduleElementDto {
     private Integer number;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = DATE_PATTERN)
     private LocalDate date;
     private BigDecimal totalPayment;
     private BigDecimal interestPayment;
