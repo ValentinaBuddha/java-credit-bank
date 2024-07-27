@@ -37,7 +37,7 @@ public class StatementController {
      */
     @Operation(summary = "Прескоринг данных и расчёт возможных условий кредита.")
     @PostMapping
-    public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @RequestBody
+    public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @Valid @RequestBody
                                                   LoanStatementRequestDto loanStatement) {
         return statementFeignClient.calculateLoanOffers(loanStatement);
     }
@@ -47,7 +47,7 @@ public class StatementController {
      */
     @Operation(summary = "Выбор одного из предложений по кредиту.")
     @PostMapping("/select")
-    public void selectLoanOffers(@Parameter(required = true) @RequestBody LoanOfferDto loanOffer) {
+    public void selectLoanOffers(@Parameter(required = true) @RequestBody @Valid LoanOfferDto loanOffer) {
         statementFeignClient.selectLoanOffers(loanOffer);
     }
 
