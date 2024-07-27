@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * Short client data for statement list.
  *
@@ -15,6 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientDtoShort {
+
+    @Schema(description = "Уникальный идентификатор клиента", example = "3422b448-2460-4fd2-9183-8000de6f8343")
+    private UUID id;
 
     @Schema(description = "Фамилия", example = "Ivanov")
     private String lastName;

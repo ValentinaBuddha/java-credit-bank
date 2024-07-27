@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.neoflex.gateway.enums.CreditStatus;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Short credit data for statement list.
@@ -18,6 +19,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreditDtoShort {
+
+    @Schema(description = "Уникальный идентификатор кредита", example = "3422b448-2460-4fd2-9183-8000de6f8343")
+    private UUID id;
 
     @Schema(description = "Одобренная сумма кредита (с учетом страховки)", example = "100000")
     private BigDecimal amount;
