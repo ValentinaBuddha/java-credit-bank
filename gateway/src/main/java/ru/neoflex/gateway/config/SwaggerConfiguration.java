@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Gateway",
+                title = "Gateway Microservice",
                 description = "Redirect requests to other microservices", version = "1.0.0",
                 contact = @Contact(
                         name = "Valentina Vakhlamova",

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Statement",
+                title = "Statement Microservice",
                 description = "Prescoring, calculation of loan offers and choosing one of them", version = "1.0.0",
                 contact = @Contact(
                         name = "Valentina Vakhlamova",

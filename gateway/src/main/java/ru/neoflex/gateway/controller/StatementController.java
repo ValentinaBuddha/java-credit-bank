@@ -12,14 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.neoflex.gateway.dto.FinishRegistrationRequestDto;
 import ru.neoflex.gateway.dto.LoanOfferDto;
 import ru.neoflex.gateway.dto.LoanStatementRequestDto;
+import ru.neoflex.gateway.exception.PrescoringException;
+import ru.neoflex.gateway.exception.StatementStatusException;
 import ru.neoflex.gateway.feign.DealFeignClient;
 import ru.neoflex.gateway.feign.StatementFeignClient;
 
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.neoflex.gateway.enums.Status.APPROVED;
+import static ru.neoflex.gateway.enums.Status.CC_DENIED;
+import static ru.neoflex.gateway.enums.Status.PREAPPROVAL;
+
 /**
- * API for sending requests for StatementMS and DealMS.
+ * API for sending requests to StatementMS and DealMS.
  *
  * @author Valentina Vakhlamova
  */
@@ -39,7 +45,12 @@ public class StatementController {
     @PostMapping
     public List<LoanOfferDto> calculateLoanOffers(@Parameter(required = true) @Valid @RequestBody
                                                   LoanStatementRequestDto loanStatement) {
-        return statementFeignClient.calculateLoanOffers(loanStatement);
+        List<LoanOfferDto> offers = statementFeignClient.calculateLoanOffers(loanStatement);
+        if (offers.isEmpty()) {
+            throw new PrescoringException("Prescoring failed.");
+        } else {
+            return offers;
+        }
     }
 
     /**
@@ -48,7 +59,14 @@ public class StatementController {
     @Operation(summary = "Выбор одного из предложений по кредиту.")
     @PostMapping("/select")
     public void selectLoanOffers(@Parameter(required = true) @RequestBody @Valid LoanOfferDto loanOffer) {
-        statementFeignClient.selectLoanOffers(loanOffer);
+        var statement = dealFeignClient.findStatementById(loanOffer.getStatementId().toString());
+        if (statement.getStatus() == PREAPPROVAL) {
+            statementFeignClient.selectLoanOffers(loanOffer);
+        } else if (statement.getStatus() == CC_DENIED) {
+            throw new StatementStatusException("Statement was denied.");
+        } else {
+            throw new StatementStatusException("For choosing loan offer statement status should be PREAPPROVAL.");
+        }
     }
 
     /**
@@ -59,8 +77,13 @@ public class StatementController {
     public void finishRegistration(@PathVariable @Parameter(required = true) String statementId,
                                    @Parameter(required = true) @Valid @RequestBody
                                    FinishRegistrationRequestDto finishRegistration) {
-        dealFeignClient.finishRegistration(statementId, finishRegistration);
+        var statement = dealFeignClient.findStatementById(statementId);
+        if (statement.getStatus() == APPROVED) {
+            dealFeignClient.finishRegistration(statementId, finishRegistration);
+        } else if (statement.getStatus() == CC_DENIED) {
+            throw new StatementStatusException("Statement was denied.");
+        } else {
+            throw new StatementStatusException("For choosing loan offer statement status should be APPROVED.");
+        }
     }
-
-
 }

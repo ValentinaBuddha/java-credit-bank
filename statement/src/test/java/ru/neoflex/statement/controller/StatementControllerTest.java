@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -193,8 +194,13 @@ class StatementControllerTest {
 
     @Test
     void selectLoanOffers() throws Exception {
+        var rate = BigDecimal.valueOf(19);
+        var amount = BigDecimal.valueOf(100000);
+        var monthlyPayment = BigDecimal.valueOf(17602.27);
+        var id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
+        var loanOfferDto = new LoanOfferDto(id, amount, amount, 6, monthlyPayment, rate, false, false);
                mvc.perform(post("/statement/offer")
-                        .content(mapper.writeValueAsString(new LoanOfferDto()))
+                        .content(mapper.writeValueAsString(loanOfferDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

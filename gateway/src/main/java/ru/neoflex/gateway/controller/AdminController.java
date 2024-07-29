@@ -18,7 +18,7 @@ import ru.neoflex.gateway.feign.DealFeignClient;
 import java.util.List;
 
 /**
- * API for sending requests for DealMS.
+ * API for sending requests to DealMS.
  *
  * @author Valentina Vakhlamova
  */
