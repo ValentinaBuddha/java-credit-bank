@@ -57,6 +57,7 @@ class ClientMapperTest {
             .dependentAmount(1)
             .accountNumber("40817810100007408755")
             .build();
+    private UUID id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
 
     @Test
     void toClient() {
@@ -110,7 +111,6 @@ class ClientMapperTest {
 
     @Test
     void toClientDtoFull() {
-        var id = UUID.fromString("6dd2ff79-5597-4c58-9a88-55ab84c9378d");
         client.setId(id);
         client.setGender(FEMALE);
         client.setMaritalStatus(MARRIED);
@@ -150,8 +150,11 @@ class ClientMapperTest {
 
     @Test
     void toClientDtoShort() {
+        client.setId(id);
+
         var mappedClientDtoShort = clientMapper.toClientDtoShort(client);
 
+        assertEquals(id, mappedClientDtoShort.getId());
         assertEquals(lastName, mappedClientDtoShort.getLastName());
         assertEquals(firstName, mappedClientDtoShort.getFirstName());
         assertEquals(middleName, mappedClientDtoShort.getMiddleName());

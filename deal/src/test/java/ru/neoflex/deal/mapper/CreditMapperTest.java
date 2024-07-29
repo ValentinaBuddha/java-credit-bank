@@ -117,8 +117,11 @@ class CreditMapperTest {
 
     @Test
     void toCreditDtoShort() {
+        credit.setId(id);
+
         var mappedCreditDtoShort = creditMapper.toCreditDtoShort(credit);
 
+        assertEquals(id, mappedCreditDtoShort.getId());
         assertEquals(amount, mappedCreditDtoShort.getAmount());
         assertEquals(term, mappedCreditDtoShort.getTerm());
         assertEquals(monthlyPayment, mappedCreditDtoShort.getMonthlyPayment());
