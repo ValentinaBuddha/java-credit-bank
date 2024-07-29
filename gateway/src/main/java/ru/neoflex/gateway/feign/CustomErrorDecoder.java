@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.SneakyThrows;
-import ru.neoflex.gateway.exception.EntityNotFoundException;
+import ru.neoflex.gateway.exception.BadRequestException;
+import ru.neoflex.gateway.exception.ConflictException;
+import ru.neoflex.gateway.exception.NotFoundException;
 import ru.neoflex.gateway.exception.ExceptionMessage;
+import ru.neoflex.gateway.exception.ServerException;
 
 import java.io.InputStream;
 
@@ -26,9 +29,19 @@ public class CustomErrorDecoder implements ErrorDecoder {
             message = exceptionMessage.getMessage();
         }
 
-        if (response.status() == 404) {
-                return new EntityNotFoundException(message);
+        if (response.status() == 400) {
+            return new BadRequestException(message);
         }
+        if (response.status() == 404) {
+            return new NotFoundException(message);
+        }
+        if (response.status() == 409) {
+            return new ConflictException(message);
+        }
+        if (response.status() == 500) {
+            return new ServerException(message);
+        }
+
         return defaultErrorDecoder.decode(methodKey, response);
     }
 }

@@ -10,7 +10,7 @@ import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
 import ru.neoflex.deal.dto.ScoringDataDto;
-import ru.neoflex.deal.exception.ScoringException;
+import ru.neoflex.deal.exception.BadRequestException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.CreditMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
@@ -165,7 +165,7 @@ class DealServiceTest {
     void finishRegistration_whenScoringFailed_thenStatementDenied() {
         when(statementRepository.findById(any())).thenReturn(Optional.of(statement));
         when(scoringDataMapper.toScoringDataDto(any(), any(), any(), any())).thenReturn(new ScoringDataDto());
-        when(calculatorFeignClient.calculateCredit(any())).thenThrow(new ScoringException("message"));
+        when(calculatorFeignClient.calculateCredit(any())).thenThrow(new BadRequestException("message"));
 
         dealService.finishRegistration(String.valueOf(id), finishRegistration);
 

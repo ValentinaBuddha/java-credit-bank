@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.SneakyThrows;
+import ru.neoflex.deal.exception.ConflictException;
 import ru.neoflex.deal.exception.ExceptionMessage;
-import ru.neoflex.deal.exception.ScoringException;
+import ru.neoflex.deal.exception.BadRequestException;
+import ru.neoflex.deal.exception.NotFoundException;
+import ru.neoflex.deal.exception.ServerException;
 
 import java.io.InputStream;
 
@@ -27,7 +30,16 @@ public class CustomErrorDecoder implements ErrorDecoder {
         }
 
         if (response.status() == 400) {
-            return new ScoringException(message);
+            return new BadRequestException(message);
+        }
+        if (response.status() == 404) {
+            return new NotFoundException(message);
+        }
+        if (response.status() == 409) {
+            return new ConflictException(message);
+        }
+        if (response.status() == 500) {
+            return new ServerException(message);
         }
 
         return defaultErrorDecoder.decode(methodKey, response);

@@ -10,7 +10,7 @@ import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
 import ru.neoflex.deal.enums.Status;
-import ru.neoflex.deal.exception.ScoringException;
+import ru.neoflex.deal.exception.BadRequestException;
 import ru.neoflex.deal.feign.CalculatorFeignClient;
 import ru.neoflex.deal.mapper.CreditMapper;
 import ru.neoflex.deal.mapper.OfferMapper;
@@ -128,7 +128,7 @@ public class DealService {
             creditDto = calculatorFeignClient.calculateCredit(scoringData);
             log.info("CreditDto get from CalculatorMS = {}", creditDto);
 
-        } catch (ScoringException exception) {
+        } catch (BadRequestException exception) {
             log.info(exception.getMessage());
 
             adminService.saveStatementStatus(statement, CC_DENIED, AUTOMATIC);
