@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import ru.neoflex.deal.enums.Gender;
 import ru.neoflex.deal.enums.MaritalStatus;
 
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -60,7 +59,6 @@ public class ScoringDataDto {
     private LocalDate passportIssueDate;
 
     @Schema(description = "Отделение выдачи паспорта", example = "ОВД кировского района города Пензы")
-    @NotBlank(message = "Необходимо указать отделение выдачи паспорта")
     private String passportIssueBranch;
 
     @Schema(description = "Семейное положение", example = "MARRIED")

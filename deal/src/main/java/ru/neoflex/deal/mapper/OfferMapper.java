@@ -8,4 +8,6 @@ import ru.neoflex.deal.model.jsonb.AppliedOffer;
 public interface OfferMapper {
 
     AppliedOffer toAppliedOffer(LoanOfferDto loanOffer);
+
+    LoanOfferDto toLoanOfferDto(AppliedOffer appliedOffer);
 }

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Full final credit parameters.
+ * Final credit parameters.
  *
  * @author Valentina Vakhlamova
  */

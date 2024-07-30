@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.neoflex.deal.dto.StatementDto;
+import ru.neoflex.deal.dto.StatementDtoFull;
 import ru.neoflex.deal.mapper.StatementMapper;
 import ru.neoflex.deal.model.Statement;
 import ru.neoflex.deal.reposiory.StatementRepository;
@@ -81,12 +81,12 @@ class AdminServiceTest {
     @Test
     void findStatementById_whenStatementFound_thenReturnStatementDto() {
         when(statementRepository.findById(any())).thenReturn(Optional.ofNullable(statement));
-        when(statementMapper.toStatementDto(any())).thenReturn(new StatementDto());
+        when(statementMapper.toStatementDtoFull(any())).thenReturn(new StatementDtoFull());
 
         assertDoesNotThrow(() -> adminService.findStatementById(String.valueOf(id)));
 
         verify(statementRepository, times(1)).findById(any());
-        verify(statementMapper, times(1)).toStatementDto(any());
+        verify(statementMapper, times(1)).toStatementDtoFull(any());
     }
 
     @Test

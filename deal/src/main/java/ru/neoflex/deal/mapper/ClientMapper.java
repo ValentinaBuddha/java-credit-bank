@@ -3,13 +3,15 @@ package ru.neoflex.deal.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import ru.neoflex.deal.dto.ClientDtoFull;
+import ru.neoflex.deal.dto.ClientDtoShort;
 import ru.neoflex.deal.dto.FinishRegistrationRequestDto;
 import ru.neoflex.deal.dto.LoanStatementRequestDto;
 import ru.neoflex.deal.model.Client;
 import ru.neoflex.deal.model.Employment;
 import ru.neoflex.deal.model.Passport;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {EmploymentMapper.class, PassportMapper.class})
 public interface ClientMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -40,4 +42,8 @@ public interface ClientMapper {
     @Mapping(target = "passport", source = "passport")
     Client toFullClient(@MappingTarget Client client, FinishRegistrationRequestDto finishRegistration,
                       Employment employment, Passport passport);
+
+    ClientDtoShort toClientDtoShort(Client client);
+
+    ClientDtoFull toClientDtoFull(Client client);
 }

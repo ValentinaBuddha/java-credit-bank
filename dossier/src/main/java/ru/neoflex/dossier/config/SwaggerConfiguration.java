@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Credit Dossier",
+                title = "Dossier Microservice",
                 description = "The formation of documents and sending an email to the Client", version = "1.0.0",
                 contact = @Contact(
                         name = "Valentina Vakhlamova",

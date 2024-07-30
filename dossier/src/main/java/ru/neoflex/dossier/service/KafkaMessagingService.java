@@ -45,13 +45,13 @@ public class KafkaMessagingService {
     public void sendEmailWithSendDocuments(EmailMessage emailMessage) {
         log.info(MESSAGE_CONSUMED, emailMessage);
 
-        dealFeignClient.saveNewStatementStatus(emailMessage.getStatementId(), DOCUMENT_CREATED);
+        dealFeignClient.saveStatementStatus(emailMessage.getStatementId(), DOCUMENT_CREATED);
 
-        var statementDto = dealFeignClient.findStatementById(emailMessage.getStatementId());
-        var creditDto = statementDto.getCredit();
+        var statement = dealFeignClient.findStatementById(emailMessage.getStatementId());
+        var credit = statement.getCredit();
 
         var text = "Документы по кредиту.\n[Запрос на согласие с условиями.](ссылка)";
-        emailService.sendMessageWithAttachment(emailMessage.getAddress(), "Документы по кредиту", text, creditDto);
+        emailService.sendMessageWithAttachment(emailMessage.getAddress(), "Документы по кредиту", text, credit);
     }
 
     @KafkaListener(topics = "send-ses",

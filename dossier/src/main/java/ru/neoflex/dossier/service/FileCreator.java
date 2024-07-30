@@ -3,7 +3,7 @@ package ru.neoflex.dossier.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.neoflex.dossier.dto.CreditDto;
+import ru.neoflex.dossier.dto.CreditDtoFull;
 import ru.neoflex.dossier.dto.PaymentScheduleElementDto;
 import ru.neoflex.dossier.exception.FileCreatorException;
 
@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class FileCreator {
 
-    public Path createTxtFile(CreditDto creditDto) {
+    public Path createTxtFile(CreditDtoFull credit) {
         log.info("Create temporary file with txt format");
 
         Path tempFile;
@@ -33,27 +33,27 @@ public class FileCreator {
 
             try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(tempFile, StandardOpenOption.WRITE))) {
 
-                writer.write("Credit Amount " + creditDto.getAmount() + "\n");
-                writer.write("Term " + creditDto.getTerm() + "\n");
-                writer.write("Monthly Payment " + creditDto.getMonthlyPayment() + "\n");
-                writer.write("Rate " + creditDto.getRate() + "\n");
-                writer.write("PSK " + creditDto.getPsk() + "\n");
+                writer.write("Credit Amount " + credit.getAmount() + "\n");
+                writer.write("Term " + credit.getTerm() + "\n");
+                writer.write("Monthly Payment " + credit.getMonthlyPayment() + "\n");
+                writer.write("Rate " + credit.getRate() + "\n");
+                writer.write("PSK " + credit.getPsk() + "\n");
 
-                if (Boolean.TRUE.equals(creditDto.getIsInsuranceEnabled())) {
+                if (Boolean.TRUE.equals(credit.getIsInsuranceEnabled())) {
                     writer.write("Insurance enabled\n");
                 } else {
                     writer.write("Insurance is not enabled\n");
                 }
 
-                if (Boolean.TRUE.equals(creditDto.getIsSalaryClient())) {
+                if (Boolean.TRUE.equals(credit.getIsSalaryClient())) {
                     writer.write("Salary Client - Yes\n\n");
                 } else {
                     writer.write("Salary Client - No\n\n");
                 }
 
                 writer.write("Number,Date,Total Payment,Interest Payment,Debt Payment,Remaining Debt\n");
-                if (creditDto.getPaymentSchedule() != null) {
-                    for (PaymentScheduleElementDto payment : creditDto.getPaymentSchedule()) {
+                if (credit.getPaymentSchedule() != null) {
+                    for (PaymentScheduleElementDto payment : credit.getPaymentSchedule()) {
                         writer.write(payment.getNumber() + ",");
                         writer.write(payment.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ",");
                         writer.write(payment.getTotalPayment() + ",");

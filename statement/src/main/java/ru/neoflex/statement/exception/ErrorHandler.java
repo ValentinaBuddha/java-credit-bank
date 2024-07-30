@@ -8,19 +8,31 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ConstraintViolationException.class, ValidationException.class, EmailExistsException.class})
+    @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validateException(RuntimeException e) {
+    public ErrorResponse validateException(BadRequestException e) {
         log.info(e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse conflictException(ConflictException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse entityNotFoundException(NotFoundException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler
@@ -33,7 +45,7 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler({Throwable.class, ServerException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(Throwable e) {
         log.info(e.getMessage());
