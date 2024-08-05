@@ -1,4 +1,7 @@
+version: '3.9'
+
 services:
+
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.10
     container_name: zookeeper
@@ -11,8 +14,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - 2181:2181
-
+      - "2181:2181"
 
   kafka:
     image: confluentinc/cp-kafka:6.2.10
@@ -21,7 +23,7 @@ services:
       zookeeper:
         condition: service_healthy
     ports:
-      - 29092:29092
+      - "29092:29092"
     healthcheck:
       test: [ "CMD", "nc", "-vz", "localhost", "9092" ]
       interval: 10s
@@ -42,7 +44,7 @@ services:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
     ports:
-      - 8080:8080
+      - "8080:8080"
     restart: always
     depends_on:
       kafka:
@@ -56,9 +58,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-    entrypoint: [ '/bin/sh', '-c' ]
+    entrypoint: /bin/sh -c
     command: |
-      "
       # blocks until kafka is reachable
       kafka-topics --bootstrap-server kafka:9092 --list
       
@@ -72,4 +73,71 @@ services:
       
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:9092 --list
-      "
+
+  deal-db:
+    image: postgres:16-alpine
+    container_name: deal-db
+    ports:
+      - "6543:5432"
+    environment:
+      - POSTGRES_DB=credit_bank
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  calculator:
+    build: calculator
+    container_name: calculator
+    ports:
+      - "8081:8081"
+
+  deal:
+    build: deal
+    container_name: deal
+    ports:
+      - "8082:8082"
+    depends_on:
+      - kafka
+      - deal-db
+      - calculator
+    environment:
+      - DB_URL=jdbc:postgresql://deal-db:5432/credit_bank
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - CALCULATOR_URL=http://calculator:8081/calculator
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
+  statement:
+    build: statement
+    container_name: statement
+    ports:
+      - "8083:8083"
+    depends_on:
+      - deal
+    environment:
+      - DEAL_URL=http://deal:8082/deal
+
+  dossier:
+    build: dossier
+    container_name: dossier
+    ports:
+      - "8084:8084"
+    depends_on:
+      - kafka
+      - deal
+    environment:
+      - DEAL_URL=http://deal:8082/deal
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
+  gateway:
+    build: gateway
+    container_name: gateway
+    ports:
+      - "8085:8085"
+    depends_on:
+      - statement
+      - deal
+    environment:
+      - DEAL_URL=http://deal:8082/deal
+      - STATEMENT_URL=http://statement:8083/statement
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
