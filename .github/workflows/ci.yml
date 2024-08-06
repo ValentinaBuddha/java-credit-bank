@@ -15,6 +15,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        module: ['calculator', 'deal', 'statement', 'dossier', 'gateway']
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,16 +26,16 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'corretto'  # Используем Corretto как поставщика JDK
+          distribution: 'corretto'
           java-version: '17'
 
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ matrix.module }}/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build all modules with Maven
-        run: mvn -B clean install
+      - name: Build module with Maven
+        run: mvn -B -f ${{ matrix.module }}/pom.xml clean install
