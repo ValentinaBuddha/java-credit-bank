@@ -54,10 +54,6 @@ jobs:
 
       - name: SonarCloud Scan
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn -B -f ${{ matrix.module }}/pom.xml sonar:sonar \
-            -Dsonar.projectKey=ValentinaBuddha_java-credit-bank \
-            -Dsonar.organization=valentinabuddha \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.coverage.jacoco.xmlReportPaths=${{ matrix.module }}/target/site/jacoco/jacoco.xml
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ValentinaBuddha_java-credit-bank
