@@ -46,6 +46,6 @@ jobs:
       - name: Upload coverage to CodeCov Calculator
         uses: codecov/codecov-action@v3
         with:
-          files: calculator/target/site/jacoco/jacoco.exec
+          files: calculator/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
