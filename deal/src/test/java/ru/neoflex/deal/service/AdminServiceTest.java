@@ -2,6 +2,7 @@ package ru.neoflex.deal.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -70,8 +71,8 @@ class AdminServiceTest {
     void saveStatementStatusWithStatementId_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
-                adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL, MANUAL));
+        Executable executable = () -> adminService.saveStatementStatus(String.valueOf(id), PREAPPROVAL, MANUAL);
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, executable);
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
                 exception.getMessage());
@@ -93,8 +94,8 @@ class AdminServiceTest {
     void findStatementById_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
-                adminService.findStatementById(String.valueOf(id)));
+        Executable executable = () -> adminService.findStatementById(String.valueOf(id));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, executable);
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
                 exception.getMessage());
