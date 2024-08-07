@@ -2,6 +2,7 @@ package ru.neoflex.deal.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -153,8 +154,8 @@ class DealServiceTest {
     void finishRegistration_whenStatementNotFound_thenThrowsException() {
         when(statementRepository.findById(any())).thenReturn(Optional.empty());
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
-                dealService.finishRegistration(String.valueOf(id), finishRegistration));
+        Executable executable = () -> dealService.finishRegistration(String.valueOf(id), finishRegistration);
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, executable);
 
         assertEquals("Statement with id 6dd2ff79-5597-4c58-9a88-55ab84c9378d wasn't found",
                 exception.getMessage());
