@@ -43,9 +43,9 @@ jobs:
       - name: Run tests and generate coverage report
         run: mvn -B -f ${{ matrix.module }}/pom.xml test jacoco:report
 
-      - name: Upload coverage to CodeCov Calculator
+      - name: Upload coverage to CodeCov
         uses: codecov/codecov-action@v3
         with:
-          files: calculator/target/site/jacoco/jacoco.xml
+          files: ${{ matrix.module }}/target/site/jacoco/jacoco.exec
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
