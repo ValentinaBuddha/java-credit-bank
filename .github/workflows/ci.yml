@@ -51,3 +51,13 @@ jobs:
           files: ${{ matrix.module }}/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B -f ${{ matrix.module }}/pom.xml sonar:sonar \
+            -Dsonar.projectKey=<java-credit-bank> \
+            -Dsonar.organization=<valentinabuddha> \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.coverage.jacoco.xmlReportPaths=${{ matrix.module }}/target/site/jacoco/jacoco.xml
