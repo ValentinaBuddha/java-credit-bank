@@ -41,11 +41,15 @@ jobs:
         run: mvn -B -f ${{ matrix.module }}/pom.xml clean install
 
       - name: Run tests and generate coverage report
+        if: ${{ !fromJson('["dossier", "gateway"]').contains(matrix.module) }}
         run: mvn -B -f ${{ matrix.module }}/pom.xml test jacoco:report
 
-      - name: Upload coverage to CodeCov Calculator
+      - name: Upload coverage to Codecov
+        if: ${{ !fromJson('["dossier", "gateway"]').contains(matrix.module) }}
         uses: codecov/codecov-action@v3
         with:
-          files: calculator/target/site/jacoco/jacoco.xml
+          files: ${{ matrix.module }}/target/site/jacoco/jacoco.xml
+          flags: ${{ matrix.module }}
+          name: ${{ matrix.module }}
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
