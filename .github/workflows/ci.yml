@@ -57,7 +57,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B -f ${{ matrix.module }}/pom.xml sonar:sonar \
-            -Dsonar.projectKey=<java-credit-bank> \
-            -Dsonar.organization=<valentinabuddha> \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.coverage.jacoco.xmlReportPaths=${{ matrix.module }}/target/site/jacoco/jacoco.xml
