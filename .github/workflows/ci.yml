@@ -41,7 +41,7 @@ jobs:
         run: mvn -B -f ${{ matrix.module }}/pom.xml clean install
 
       - name: Run tests and generate coverage report
-        if: ${{ !fromJson('["dossier", "gateway"]').contains(matrix.module) }}
+#        if: ${{ !fromJson('["dossier", "gateway"]').contains(matrix.module) }}
         run: mvn -B -f ${{ matrix.module }}/pom.xml test jacoco:report
 
       - name: Upload coverage to Codecov
