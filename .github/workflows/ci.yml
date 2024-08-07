@@ -39,3 +39,14 @@ jobs:
 
       - name: Build module with Maven
         run: mvn -B -f ${{ matrix.module }}/pom.xml clean install
+
+      - name: Run tests and generate coverage report
+        run: mvn -B -f ${{matrix.module }}/pom.xml test jacoco:report
+
+      - name: Upload coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ${{matrix.module }}/target/site /jacoco/jacoco.xml
+          fail_ci_if_error: true
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
