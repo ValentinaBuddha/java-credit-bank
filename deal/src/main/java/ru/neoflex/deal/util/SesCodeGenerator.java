@@ -1,10 +1,10 @@
 package ru.neoflex.deal.util;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class SesCodeGenerator {
 
-    private static final Random RANDOM = new Random();
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     public static int generateSesCode() {
         return 100000 + RANDOM.nextInt(900000);
