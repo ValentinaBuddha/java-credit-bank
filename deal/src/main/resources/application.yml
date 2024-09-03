@@ -1,0 +1,63 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/credit_bank
+    username: postgres
+    password: postgres
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        ddl-auto: none
+        show-sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: always
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: 1
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+
+logging:
+  level:
+    org:
+      zalando:
+        logbook: TRACE
+      springframework:
+        orm:
+          jpa: info
+          JpaTransactionManager: debug
+        transaction: info
+        web:
+          servlet:
+            DispatcherServlet: debug
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+    web: info
+    ru.neoflex.deal.feign: debug
+
+calculator:
+  url: 'http://localhost:8081/calculator'
