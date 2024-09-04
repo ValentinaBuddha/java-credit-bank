@@ -1,6 +1,6 @@
 # «Кредитный банк»
 
-**Приложение для рассчета и выдачи кредитов**
+**Приложение для расчёта и выдачи кредитов**
 
 [![Java](https://img.shields.io/badge/-Java%2017-F29111?style=for-the-badge&logo=java&logoColor=e38873)](https://www.oracle.com/java/)
 [![Spring](https://img.shields.io/badge/-Spring%20Boot%203.2-6AAD3D?style=for-the-badge&logo=spring-boot&logoColor=90fd87)](https://spring.io/projects/spring-boot)
@@ -18,9 +18,9 @@
 ![Lombok](https://img.shields.io/badge/Lombok-1.18.24-green?logo=java&logoColor=white)
 ![Feign](https://img.shields.io/badge/Feign-11.0-blue?logo=spring&logoColor=white)
 ![Java Mail](https://img.shields.io/badge/Java%20Mail-1.6.2-blue?logo=java&logoColor=white)
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ValentinaBuddha_java-credit-bank&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ValentinaBuddha_java-credit-bank)
 [![codecov](https://codecov.io/gh/ValentinaBuddha/java-credit-bank/graph/badge.svg?token=TI11OA2PD2)](https://codecov.io/gh/ValentinaBuddha/java-credit-bank)
-
 
 
 ## Логика работы
@@ -39,17 +39,19 @@
    Если согласился - МС Досье на почту отправляет код и ссылку на подписание документов, куда клиент должен отправить полученный код в МС Сделка.
 10. Если полученный код совпадает с отправленным, МС Сделка выдает кредит (меняет статус сущности "Кредит" на ISSUED, а статус заявки на CREDIT_ISSUED)
 
-## Архитектура и Business-flow
+### Архитектура
 
 ![Architecture](documents/arch.png)
 
+### Sequence диаграмма
+
 ![Sequence-diagram](documents/seq.png)
+
+### Business flow
 
 ![Business-flow](documents/bf.png)
 
-
 Цвета:
-
 - Оранжевый: Application
 - Голубой: Deal + Database
 - Фиолетовый: Conveyor
@@ -57,13 +59,11 @@
 - Красный: конец флоу
 
 Типы действий:
-
 - Иконка «человек» сверху слева: пользовательское действие
 - Иконка «зубчатое колесо» сверху слева: действие системы
 - Иконка «молния»: ошибка
 - Иконка «прямоугольник с горизонтальными полосками»: выбор пользователя
 - Иконка «конверт»: асинхронная отправка email-сообщения на почту
-
 
 ## Запуск приложения
 
@@ -73,16 +73,15 @@
    [Docker Desktop](https://www.docker.com/products/docker-desktop/).
    <br>Затем в командной строке cmd выполните следующие команды
 
-
+```shell
+   git clone git@github.com:ValentinaBuddha/java-credit-bank.git
+   cd ~/java-credit-bank  
+   mvn clean package
+   git checkout main
+   docker-compose up -d
    ```
-git clone git@github.com:ValentinaBuddha/java-credit-bank.git
-cd ~/java-credit-bank  
-mvn clean package
-git checkout main
-docker-compose up -d
-   ```
 
-<br>Swagger-документация - [Swagger](http://localhost:8085/swagger-ui/index.html#/)
+4. [Swagger](http://localhost:8085/swagger-ui/index.html#/)
 
 
 ## Диаграмма базы данных
