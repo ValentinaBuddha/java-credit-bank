@@ -337,4 +337,3 @@ class DealControllerTest {
                 .andExpect(status().isOk());
     }
 }
-
