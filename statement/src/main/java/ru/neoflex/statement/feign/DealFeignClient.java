@@ -1,0 +1,20 @@
+package ru.neoflex.statement.feign;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.neoflex.statement.config.DealFeignClientConfiguration;
+import ru.neoflex.statement.dto.LoanOfferDto;
+import ru.neoflex.statement.dto.LoanStatementRequestWrapper;
+
+import java.util.List;
+
+@FeignClient(value = "deal", url = "${deal.url}", configuration = DealFeignClientConfiguration.class)
+public interface DealFeignClient {
+
+    @PostMapping(value = "/statement")
+    List<LoanOfferDto> calculateLoanOffers(@RequestBody LoanStatementRequestWrapper loanStatementWrapper);
+
+    @PostMapping(value = "/offer/select")
+    void selectLoanOffers(@RequestBody LoanOfferDto loanOffer);
+}

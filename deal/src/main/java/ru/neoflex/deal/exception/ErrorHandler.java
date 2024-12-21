@@ -45,7 +45,7 @@ public class ErrorHandler {
 
     @ExceptionHandler({EntityNotFoundException.class, NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse entityNotFoundException(RuntimeException e) {
+    public ErrorResponse entityNotFoundException(EntityNotFoundException e) {
         log.info(e.getMessage());
         return new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
